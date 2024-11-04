@@ -4575,17 +4575,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4ea6f7b9046d74188dc7a841db31ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hammerPivot: {fileID: 736213635}
+  _renderer: {fileID: 6359489596409734693}
+  hammerHandlePivot: {fileID: 1581636388}
+  hammerFacePivot: {fileID: 736213635}
   targetHitObject: {fileID: 1725331314}
   targetHitPosition: {fileID: 1023208975}
   ground:
     serializedVersion: 2
     m_Bits: 2048
   hammerAttack: {fileID: 1725331320}
-  hightHammerFromGround: 30
+  hightHammerFromGround: 10
   targetHammerRadius: 8
-  hammerMoveSpeed: 100
-  hammerRotationSpeed: 300
+  speedFadeIn: 0.5
+  speedFadeOut: 0.8
+  hammerChargeSpeed: 50
+  chargeBack: 0
+  chargeUp: 10
+  chargeDuration: 1
+  hammerChargeRotationSpeed: 150
+  hammerMoveSpeed: 150
+  attackUpDuration: 1
+  hammerDownRotationSpeed: 1050
+  hammerUpRotationSpeed: 1000
   canMove: 1
   sensitivity: 1
 --- !u!1 &103564918
@@ -37112,7 +37123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 736213636}
   m_Layer: 0
-  m_Name: HammerPivot
+  m_Name: HammerFacePivot
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -37126,13 +37137,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736213635}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 11.839999, y: 35.54, z: -1.5200014}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.42, y: 12.029997, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 543450652875433455}
-  m_Father: {fileID: 1023208976}
+  m_Children: []
+  m_Father: {fileID: 1581636389}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &739521714
 Mesh:
@@ -51565,16 +51575,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023208975}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.770001, y: -18.140001, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 736213636}
+  - {fileID: 1581636389}
   - {fileID: 1359142506}
   - {fileID: 1725331315}
   m_Father: {fileID: 101632673}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1025505758
 Mesh:
   m_ObjectHideFlags: 0
@@ -63380,9 +63390,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359142505}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 25.414429, y: 25.414434, z: 25.414429}
+  m_LocalScale: {x: 25.41443, y: 25.414434, z: 25.41443}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1023208976}
@@ -73100,6 +73110,39 @@ Transform:
   - {fileID: 821834751}
   m_Father: {fileID: 837939655}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1581636388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1581636389}
+  m_Layer: 0
+  m_Name: HammerHandelPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1581636389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581636388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.5200028, y: 23.510002, z: -20.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 543450652875433455}
+  - {fileID: 736213636}
+  m_Father: {fileID: 1023208976}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1582229165
 GameObject:
   m_ObjectHideFlags: 0
@@ -96597,14 +96640,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132148939128661}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -3.5399876, z: -6.880018}
-  m_LocalScale: {x: 0.009999998, y: 0.01, z: 0.010000002}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.5799775, y: 8.490011, z: 0}
+  m_LocalScale: {x: 0.009999995, y: 0.01, z: 0.009999999}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5178235891015459984}
-  m_Father: {fileID: 736213636}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_Father: {fileID: 1581636389}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &919132148939128661
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,6 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         _playerVirtualCamera = GetComponent<CinemachineVirtualCamera>();
-        _cameraMoveTarget = _playerVirtualCamera.transform.position;
     }
 
     // Takes input from player input manager and transforms it to Vector2
@@ -34,16 +33,21 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         // MoveWithKeyboard();
-        MoveWithMouse();
+        // MoveWithMouse();
     }
 
     void MoveWithKeyboard()
     {
         Vector3 cameraMovementDirection = new Vector3(_cameraMoveInput2D.x, 0f, _cameraMoveInput2D.y).normalized;
+        _cameraMoveTarget = _playerVirtualCamera.transform.position;
         _cameraMoveTarget += ((Vector3.forward + Vector3.right) * _cameraMoveInput2D.y +
-                              transform.right.normalized * _cameraMoveInput2D.x +
-                              Vector3.zero) * Time.deltaTime * _cameraSpeed;
-        _playerVirtualCamera.transform.position = Vector3.Lerp(_playerVirtualCamera.transform.position, _cameraMoveTarget, Time.deltaTime * _cameraSpeed);
+                                  transform.right.normalized * _cameraMoveInput2D.x +
+                                  Vector3.zero) * Time.deltaTime * _cameraSpeed;
+        if (_cameraMoveInput2D != Vector2.zero)
+        {
+            transform.position = Vector3.Lerp(transform.position, _cameraMoveTarget, Time.deltaTime * _cameraSpeed);
+        }
+
     }
 
     void MoveWithMouse()
@@ -54,31 +58,11 @@ public class CameraController : MonoBehaviour
         {
             direction += Vector3.left; // ไปทางซ้าย
             onMoveLeftRight = true;
-            if (Input.mousePosition.y <= Screen.height / 2)
-            {
-                // UnityEngine.Debug.Log("ล่าง");
-
-            }
-            else
-            {
-                // UnityEngine.Debug.Log("บน");
-
-            }
         }
         else if (Input.mousePosition.x >= Screen.width - edgeSize)
         {
             direction += Vector3.right; // ไปทางขวา
             onMoveLeftRight = true;
-            if (Input.mousePosition.y <= Screen.height / 2)
-            {
-                // UnityEngine.Debug.Log("ล่าง");
-
-            }
-            else
-            {
-                // UnityEngine.Debug.Log("บน");
-
-            }
         }
         else
         {
