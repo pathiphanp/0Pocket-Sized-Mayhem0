@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94d142c84caee04e8366c537aebf796, type: 3}
+  m_Name: Example Terrain Automation Profile
+  m_EditorClassIdentifier: 
+  _editingMode: 1
+  <TerrainLayers>k__BackingField:
+  - {fileID: 8574412962073106934, guid: b611e5ffabdb2574bb116eb7575f6587, type: 2}
+  - {fileID: 8574412962073106934, guid: ea3b8ab01acace74d9facd2e3599401a, type: 2}
+  - {fileID: 8574412962073106934, guid: da14be879b5515443a9674d04ce89a5f, type: 2}
+  - {fileID: 8574412962073106934, guid: 17cdfb5fad7547f438e003c6dd9c667e, type: 2}
+  <Seed>k__BackingField: 123456
+  <Count>k__BackingField: 5000
+  <KeepExistingTrees>k__BackingField: 0
+  <Trees>k__BackingField:
+  - Prefab: {fileID: 707904656058760762, guid: 093f7fa2853daca48ad007b4435ea867, type: 3}
+    DistributionWeight: 3
+    ScaleRange:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.75
+        inSlope: -1
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1.25
+        inSlope: 1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ScaleMultiplier: 0.8
+    SplatFilter: {x: 0, y: 0, z: 1, w: -50}
+    SplatCutoff: 0.2
+    MinMaxPlacementHeight: {x: 0, y: 50}
+    MaxSlope: 90
+  <DetailLayers>k__BackingField:
+  - Prefab: {fileID: 1191547375560748704, guid: d078c53cb0c0c3a438aec1c05b49b14d,
+      type: 3}
+    Density: 1000
+    DensityScale: 3
+    AlignToGround: 0.3
+    NoiseSeed: 25896030
+    ScaleRange: {x: 1, y: 2}
+    SplatFilter: {x: 0, y: 0, z: 0.3, w: 0}
+    SplatCutoff: 0.01
+    MinMaxPlacementHeight: {x: 0, y: 50}
+    MaxSlope: 90

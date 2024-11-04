@@ -1,0 +1,98 @@
+;FBX 6.1.0 project file
+;Created by Tree IT
+
+FBXHeaderExtension:  {
+ FBXHeaderVersion: 1003
+ FBXVersion: 6100
+}
+
+Definitions:  {
+ Version: 100
+ Count: 3
+ ObjectType: "Model" {
+  Count: 1
+ }
+ ObjectType: "Geometry" {
+  Count: 1
+ }
+ ObjectType: "Texture" {
+  Count: 1
+ }
+}
+
+Objects: {
+ Model: "Model::pine_LO_0", "Mesh" {
+  Version: 232
+  MultiLayer: 0
+  MultiTake: 1
+  Shading: Y
+  Culling: "CullingOn"
+  Vertices: -47.35852,125.72749,-0.38560,45.57375,125.72749,-0.38560,-47.35852,10.69840,-0.38560,45.57375,10.69840,-0.38560,-0.89238,140.10611,-0.38560,-0.89238,-3.68023,-0.38560,-0.89238,125.72749,45.53892,-0.89238,125.72749,-46.31011,
+            -0.89238,10.69840,45.53892,-0.89238,10.69840,-46.31011,-0.89238,140.10611,-0.38560,-0.89238,-3.68023,-0.38560
+  PolygonVertexIndex: 1,0,-3,3,1,-3,1,4,-1,3,2,-6,7,6,-9,9,7,-9,7,10,-7,9,8,-12
+  GeometryVersion: 124
+  LayerElementNormal: 0 {
+   Version: 101
+   Name: ""
+   MappingInformationType: "ByVertice"
+   ReferenceInformationType: "Direct"
+   Normals: 0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,
+            0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000,0.00000,1.00000,0.00000
+  }
+  LayerElementColor: 0 {
+   Version: 101
+   Name: ""
+   MappingInformationType: "ByVertice"
+   ReferenceInformationType: "Direct"
+   Colors: 0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,
+            0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000,0.00392,0.00000,0.00000,1.00000
+  }
+  LayerElementUV: 0 {
+   Version: 101
+   Name: ""
+   MappingInformationType: "ByVertice"
+   ReferenceInformationType: "Direct"
+   UV: 0.00000,0.90000,0.50000,0.90000,0.00000,0.10000,0.50000,0.10000,0.25000,1.00000,0.25000,0.00000,1.00000,0.90000,0.50000,0.90000,1.00000,0.10000,0.50000,0.10000,0.75000,1.00000,0.75000,0.00000
+  }
+  LayerElementTexture: 0 {
+   Version: 101
+   Name: ""
+   MappingInformationType: "AllSame"
+   ReferenceInformationType: "IndexToDirect"
+   TextureId: 0
+  }
+  Layer: 0 {
+   Version: 100
+   LayerElement: {
+    Type: "LayerElementNormal"
+    TypedIndex: 0
+   }
+   LayerElement: {
+    Type: "LayerElementColor"
+    TypedIndex: 0
+   }
+   LayerElement: {
+    Type: "LayerElementUV"
+    TypedIndex: 0
+   }
+   LayerElement: {
+    Type: "LayerElementTexture"
+    TypedIndex: 0
+   }
+  }
+ }
+ Texture: "Texture::pine_LO_png", "" {
+  Version: 202
+  TextureName: "Texture::pine_LO_png"
+  FileName: "pine_LO.png"
+  RelativeFilename: "pine_LO.png"
+  ModelUVTranslation: 0,0
+  ModelUVScaling: 1,1
+ }
+}
+
+Connections: {
+ Connect: "OO", "Model::pine_LO_0", "Model::Scene"
+ Connect: "OO", "Texture::pine_LO_png", "Model::pine_LO_0"
+}
+

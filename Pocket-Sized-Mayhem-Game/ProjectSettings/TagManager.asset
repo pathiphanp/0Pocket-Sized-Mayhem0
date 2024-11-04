@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Mallet
+  - MainFloor
+  - Vacuum
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - PlayerWeapon
+  - Water
+  - UI
+  - Civilian
+  - Enemy
+  - Character
+  - FPSForeground
+  - Minimap
+  - Floor
+  - RedOverlay
+  - GreenOverlay
+  - Weapon
+  - Prison
+  - Shelter
+  - Bomb
+  - Debris
+  - Claw
+  - Vacuum
+  - Car
+  - EscapePoint
+  - Shield
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0

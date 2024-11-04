@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781cc897cf8675041a751163b51f97dd, type: 3}
+  m_Name: HDRenderPipelineGlobalSettings
+  m_EditorClassIdentifier: 
+  m_Settings:
+    m_SettingsList: []
+    m_RuntimeSettings: []
+  m_DefaultVolumeProfile: {fileID: 11400000, guid: 14b392ee213d25a48b1feddbd9f5a9be,
+    type: 2}
+  m_LookDevVolumeProfile: {fileID: 11400000, guid: 4594f4a3fb14247e192bcca6dc23c8ed,
+    type: 2}
+  m_ObsoleteRenderingPathDefaultCameraFrameSettings:
+    bitDatas:
+      data1: 73324160532610893
+      data2: 18410717457460199448
+    lodBias: 1
+    lodBiasMode: 0
+    lodBiasQualityLevel: 0
+    maximumLODLevel: 0
+    maximumLODLevelMode: 0
+    maximumLODLevelQualityLevel: 0
+    sssQualityMode: 0
+    sssQualityLevel: 0
+    sssCustomSampleBudget: 20
+    sssCustomDownsampleSteps: 0
+    msaaMode: 1
+    materialQuality: 0
+  m_ObsoleteRenderingPathDefaultBakedOrCustomReflectionFrameSettings:
+    bitDatas:
+      data1: 135310754214733
+      data2: 13763000465539235864
+    lodBias: 1
+    lodBiasMode: 0
+    lodBiasQualityLevel: 0
+    maximumLODLevel: 0
+    maximumLODLevelMode: 0
+    maximumLODLevelQualityLevel: 0
+    sssQualityMode: 0
+    sssQualityLevel: 0
+    sssCustomSampleBudget: 20
+    sssCustomDownsampleSteps: 0
+    msaaMode: 1
+    materialQuality: 0
+  m_ObsoleteRenderingPathDefaultRealtimeReflectionFrameSettings:
+    bitDatas:
+      data1: 139923391782733
+      data2: 18374686484235026448
+    lodBias: 1
+    lodBiasMode: 0
+    lodBiasQualityLevel: 0
+    maximumLODLevel: 0
+    maximumLODLevelMode: 0
+    maximumLODLevelQualityLevel: 0
+    sssQualityMode: 0
+    sssQualityLevel: 0
+    sssCustomSampleBudget: 20
+    sssCustomDownsampleSteps: 0
+    msaaMode: 1
+    materialQuality: 0
+  m_RenderingPath:
+    m_Version: 0
+    m_Camera:
+      bitDatas:
+        data1: 73324160532610893
+        data2: 18410717457460199448
+      lodBias: 1
+      lodBiasMode: 0
+      lodBiasQualityLevel: 0
+      maximumLODLevel: 0
+      maximumLODLevelMode: 0
+      maximumLODLevelQualityLevel: 0
+      sssQualityMode: 0
+      sssQualityLevel: 0
+      sssCustomSampleBudget: 20
+      sssCustomDownsampleSteps: 0
+      msaaMode: 1
+      materialQuality: 0
+    m_CustomOrBakedReflection:
+      bitDatas:
+        data1: 135310754214733
+        data2: 13763000465539235864
+      lodBias: 1
+      lodBiasMode: 0
+      lodBiasQualityLevel: 0
+      maximumLODLevel: 0
+      maximumLODLevelMode: 0
+      maximumLODLevelQualityLevel: 0
+      sssQualityMode: 0
+      sssQualityLevel: 0
+      sssCustomSampleBudget: 20
+      sssCustomDownsampleSteps: 0
+      msaaMode: 1
+      materialQuality: 0
+    m_RealtimeReflection:
+      bitDatas:
+        data1: 139923391782733
+        data2: 18374686484235026448
+      lodBias: 1
+      lodBiasMode: 0
+      lodBiasQualityLevel: 0
+      maximumLODLevel: 0
+      maximumLODLevelMode: 0
+      maximumLODLevelQualityLevel: 0
+      sssQualityMode: 0
+      sssQualityLevel: 0
+      sssCustomSampleBudget: 20
+      sssCustomDownsampleSteps: 0
+      msaaMode: 1
+      materialQuality: 0
+  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7,
+    type: 2}
+  m_RenderPipelineRayTracingResources: {fileID: 0}
+  beforeTransparentCustomPostProcesses: []
+  beforePostProcessCustomPostProcesses: []
+  afterPostProcessBlursCustomPostProcesses: []
+  afterPostProcessCustomPostProcesses: []
+  beforeTAACustomPostProcesses: []
+  defaultRenderingLayerMask: 257
+  renderingLayerNames:
+  - Default
+  - ToonLighting
+  - Highlight
+  - Layer 3
+  - Layer 4
+  - Layer 5
+  - Layer 6
+  - Layer 7
+  - Default Decal
+  lightLayerName0: Light Layer default
+  lightLayerName1: Light Layer 1
+  lightLayerName2: Light Layer 2
+  lightLayerName3: Light Layer 3
+  lightLayerName4: Light Layer 4
+  lightLayerName5: Light Layer 5
+  lightLayerName6: Light Layer 6
+  lightLayerName7: Light Layer 7
+  decalLayerName0: Decal Layer default
+  decalLayerName1: Decal Layer 1
+  decalLayerName2: Decal Layer 2
+  decalLayerName3: Decal Layer 3
+  decalLayerName4: Decal Layer 4
+  decalLayerName5: Decal Layer 5
+  decalLayerName6: Decal Layer 6
+  decalLayerName7: Decal Layer 7
+  lensAttenuationMode: 0
+  colorGradingSpace: 0
+  m_ObsoleteDiffusionProfileSettingsList:
+  - {fileID: 0}
+  - {fileID: 0}
+  specularFade: 0
+  rendererListCulling: 0
+  DLSSProjectId: 000000
+  useDLSSCustomProjectId: 0
+  supportProbeVolumes: 0
+  autoRegisterDiffusionProfiles: 0
+  analyticDerivativeEmulation: 0
+  analyticDerivativeDebugOutput: 0
+  apvScenesData:
+    m_ObsoleteSerializedBakingSets: []
+    sceneToBakingSet:
+      m_Keys:
+      - 3c5ec219233798b478be6f6ce42ece4d
+      - 531d72d03f6d7b34ca1dfa2418cfa6ce
+      - f88f0145745aeb44990f9ebbd2a4d936
+      - cde1aaf4db52be649a61ab4c92e54c82
+      - fa65b82cf01e3ac419949ae83b762bdf
+      - ee0f42d439f07494bb819a64943194d5
+      - f0744d56a4162664bb6d1165775c62b4
+      - 1cf71387ec5186141beffcdf44e14300
+      - 845efb974a677a5469d40ae22c2af6ac
+      - b44d55fb839749e4a92dfe14ccc655fd
+      - f9ad4ab2fe5a2c8489918d903d5dad89
+      - 1d126f586df0240428c49af34e012f3b
+      - f1e52779175e52c4784f8f4aea25ab92
+      - 0409e33768c2f1743be8d105b3cdb438
+      m_Values:
+      - {fileID: 11400000, guid: 69fb609998c16d94cb5e7faa05a2303a, type: 2}
+      - {fileID: 11400000, guid: ed862bf9f58d9744598228d07b98f22e, type: 2}
+      - {fileID: 11400000, guid: cfe8e018733d5d84698b99835e9af159, type: 2}
+      - {fileID: 11400000, guid: 587b1f2abf5ac394d82fd14978438214, type: 2}
+      - {fileID: 11400000, guid: cd3fccb2c6773d843ae4531324fcdd6e, type: 2}
+      - {fileID: 11400000, guid: 363afef7596ab144badd7ac8e26c092a, type: 2}
+      - {fileID: 11400000, guid: 2f430aec95e076d4db658f87e73f99ce, type: 2}
+      - {fileID: 11400000, guid: d5c00a546dfaf61448be6f96fe2dba29, type: 2}
+      - {fileID: 11400000, guid: c28e424aa0979264da309bbc92ef4b3d, type: 2}
+      - {fileID: 11400000, guid: 9205fb08613102d49aa3d008d5575d31, type: 2}
+      - {fileID: 11400000, guid: a85f628920c85514cadd396839bcfb1d, type: 2}
+      - {fileID: 11400000, guid: 439c867c42bf2b142a26b6a8077b7f52, type: 2}
+      - {fileID: 11400000, guid: d22987e7d0d8a6f44859d4875360da8b, type: 2}
+      - {fileID: 11400000, guid: 3ad54706a6b8d41458814f954ef84b83, type: 2}
+    bakingSets:
+    - {fileID: 11400000, guid: 69fb609998c16d94cb5e7faa05a2303a, type: 2}
+    - {fileID: 11400000, guid: ed862bf9f58d9744598228d07b98f22e, type: 2}
+    - {fileID: 11400000, guid: cfe8e018733d5d84698b99835e9af159, type: 2}
+    - {fileID: 11400000, guid: 587b1f2abf5ac394d82fd14978438214, type: 2}
+    - {fileID: 11400000, guid: cd3fccb2c6773d843ae4531324fcdd6e, type: 2}
+    - {fileID: 11400000, guid: 363afef7596ab144badd7ac8e26c092a, type: 2}
+    - {fileID: 11400000, guid: 2f430aec95e076d4db658f87e73f99ce, type: 2}
+    - {fileID: 11400000, guid: d5c00a546dfaf61448be6f96fe2dba29, type: 2}
+    - {fileID: 11400000, guid: c28e424aa0979264da309bbc92ef4b3d, type: 2}
+    - {fileID: 11400000, guid: 97b236090b73b2748a126bc6da41c680, type: 2}
+    - {fileID: 11400000, guid: 9205fb08613102d49aa3d008d5575d31, type: 2}
+    - {fileID: 11400000, guid: a85f628920c85514cadd396839bcfb1d, type: 2}
+    - {fileID: 11400000, guid: 439c867c42bf2b142a26b6a8077b7f52, type: 2}
+    - {fileID: 11400000, guid: d22987e7d0d8a6f44859d4875360da8b, type: 2}
+    - {fileID: 11400000, guid: 3ad54706a6b8d41458814f954ef84b83, type: 2}
+    sceneBounds:
+      m_Keys:
+      - 845efb974a677a5469d40ae22c2af6ac
+      - b44d55fb839749e4a92dfe14ccc655fd
+      - 3c5ec219233798b478be6f6ce42ece4d
+      - 531d72d03f6d7b34ca1dfa2418cfa6ce
+      - cde1aaf4db52be649a61ab4c92e54c82
+      - fa65b82cf01e3ac419949ae83b762bdf
+      - f0744d56a4162664bb6d1165775c62b4
+      - 1cf71387ec5186141beffcdf44e14300
+      - 0409e33768c2f1743be8d105b3cdb438
+      - ee0f42d439f07494bb819a64943194d5
+      - be036ca12fbb1e244976c0e0dcd2a128
+      - 4e4a03849c2204f4eb12ca440a7ac618
+      - 8e9de52b2201b9148b0dc5495d9c51f5
+      - 6f687e00f101ac2489749ddcc3aa368e
+      - f947c1f53faf01d4a83705118f1903b8
+      - b03ef9e9f111f624b8568478e87f72ee
+      - 14d9f6f9aa31cae489b1bdcf3df6d237
+      m_Values:
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 486, y: 0, z: 486}
+        m_Extent: {x: 729, y: 243, z: 729}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+      - m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 81, y: 81, z: 81}
+    hasProbeVolumes:
+      m_Keys:
+      - 845efb974a677a5469d40ae22c2af6ac
+      - b44d55fb839749e4a92dfe14ccc655fd
+      - 3c5ec219233798b478be6f6ce42ece4d
+      - 531d72d03f6d7b34ca1dfa2418cfa6ce
+      - f88f0145745aeb44990f9ebbd2a4d936
+      - cde1aaf4db52be649a61ab4c92e54c82
+      - fa65b82cf01e3ac419949ae83b762bdf
+      - f0744d56a4162664bb6d1165775c62b4
+      - 1cf71387ec5186141beffcdf44e14300
+      - 0409e33768c2f1743be8d105b3cdb438
+      - ee0f42d439f07494bb819a64943194d5
+      - be036ca12fbb1e244976c0e0dcd2a128
+      - 4e4a03849c2204f4eb12ca440a7ac618
+      - 8e9de52b2201b9148b0dc5495d9c51f5
+      - 6f687e00f101ac2489749ddcc3aa368e
+      - f947c1f53faf01d4a83705118f1903b8
+      - b03ef9e9f111f624b8568478e87f72ee
+      - 14d9f6f9aa31cae489b1bdcf3df6d237
+      - f9ad4ab2fe5a2c8489918d903d5dad89
+      - 1d126f586df0240428c49af34e012f3b
+      - f1e52779175e52c4784f8f4aea25ab92
+      m_Values: 000101010001010101010101010101010101000000
+  m_Version: 10
+  m_ShaderStrippingSetting:
+    m_Version: 0
+    m_ExportShaderVariants: 1
+    m_ShaderVariantLogLevel: 0
+    m_StripRuntimeDebugShaders: 0
+  m_ShaderVariantLogLevel: 0
+  m_SupportRuntimeDebugDisplay: 0
+  m_ExportShaderVariants: 1
+  m_StripDebugVariants: 0
+  references:
+    version: 2
+    RefIds: []
