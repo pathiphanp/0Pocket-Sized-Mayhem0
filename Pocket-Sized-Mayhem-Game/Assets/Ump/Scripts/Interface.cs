@@ -3,9 +3,8 @@ namespace Interface
 {
     public interface TakeDamage
     {
-        void TakeDamage();
+        TargetType TakeDamage();
     }
-
     public interface Fear
     {
         void AddFear();

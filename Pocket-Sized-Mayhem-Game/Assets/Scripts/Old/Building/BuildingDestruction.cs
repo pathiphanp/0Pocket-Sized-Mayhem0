@@ -11,6 +11,7 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
     [SerializeField] private GameObject _civilians;
     [SerializeField] private TestSpawner _spawner;
     private bool _isDestoyed;
+    TargetType type = TargetType.Building;
     [field: SerializeField] public EventReference DeathSFX { get; set; }
     void Start()
     {
@@ -50,7 +51,7 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
         }
     }
 
-    public void TakeDamage()
+    public TargetType TakeDamage()
     {
         RuntimeManager.PlayOneShot(DeathSFX, this.gameObject.transform.position);
         this.GetComponent<Rigidbody>().isKinematic = false;
@@ -60,6 +61,7 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
             Vector3 direction = Random.insideUnitCircle.normalized;
             piece.GetComponent<Rigidbody>().AddForce(direction * _force, ForceMode.Impulse);
         }
+        return type;
     }
 
     // IEnumerator private void OnDestroy()

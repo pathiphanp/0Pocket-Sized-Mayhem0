@@ -1,4 +1,9 @@
 using UnityEngine;
+
+public enum TargetType
+{
+    NPC,Building
+}
 public class GameManager : Singleton<GameManager>
 {
     [HideInInspector] public UiManager uiManager;

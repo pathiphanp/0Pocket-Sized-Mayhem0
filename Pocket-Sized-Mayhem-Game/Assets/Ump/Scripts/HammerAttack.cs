@@ -32,7 +32,10 @@ public class HammerAttack : MonoBehaviour
             //Can Kill
             foreach (GameObject tg in target)
             {
-                GameManager._instance.AddPointPlayerKill();
+                if ( tg.GetComponent<TakeDamage>().TakeDamage() == TargetType.NPC)
+                {
+                    GameManager._instance.AddPointPlayerKill();
+                }
                 tg.GetComponent<TakeDamage>().TakeDamage();
             }
             fearAear.transform.position = transform.position;

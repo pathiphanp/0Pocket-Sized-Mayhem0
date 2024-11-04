@@ -17,6 +17,8 @@ public class NPCnormal : MonoBehaviour, TakeDamage, Fear
     [SerializeField] float cooldownFear;
     bool canFear = true;
     Coroutine callfear;
+
+    TargetType type = TargetType.NPC;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +33,10 @@ public class NPCnormal : MonoBehaviour, TakeDamage, Fear
         navMeshAgent.destination = target.transform.position;
     }
 
-    public void TakeDamage()
+    public TargetType TakeDamage()
     {
         Destroy(this.gameObject);
+        return type;
     }
 
     public void AddFear()
