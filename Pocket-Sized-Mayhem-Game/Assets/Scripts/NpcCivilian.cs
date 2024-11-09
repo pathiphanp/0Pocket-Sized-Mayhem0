@@ -2,18 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Interface;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
 
-public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
+public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite
 {
+    Rigidbody rb;
     [SerializeField] GameObject myModel;
-    Vector3 target;
+    protected Vector3 target;
     [HideInInspector] public GameObject targetOut;
-    [SerializeField] Vector3 newTargetOut;
+    [SerializeField] protected Vector3 newTargetOut;
     [SerializeField] GameObject targetFear;
-    NavMeshAgent navMeshAgent;
+    protected NavMeshAgent navMeshAgent;
 
     [SerializeField] float heartbeatDuration;
     bool findTarget = true;
@@ -29,12 +31,18 @@ public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     bool canFear = true;
     Coroutine callfear;
 
+    [Header("Car")]
+    [SerializeField] float getInCarDistance;
+    protected Car car;
+    bool onInvite = false;
     TargetType type = TargetType.NPC;
 
     Coroutine heartbeat;
     // Start is called before the first frame update
     void Start()
     {
+        targetOut = FindAnyObjectByType<Portal>().gameObject;//Test
+        rb = GetComponent<Rigidbody>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         SetUpHumansBorn();
         SetUpTarget();
@@ -61,7 +69,7 @@ public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
 
     public TargetType TakeDamage()
     {
-
+        StopCoroutine(heartbeat);
         Destroy(this.gameObject);
         return type;
     }
@@ -72,7 +80,8 @@ public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         {
             navMeshAgent.speed = 0;
             //play animation fear run
-            StartCoroutine(CooldownFearStatus()); if (callfear == null)
+            StartCoroutine(CooldownFearStatus());
+            if (callfear == null)
             {
                 callfear = StartCoroutine(DurationFear());
             }
@@ -106,6 +115,16 @@ public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
             heartbeat = StartCoroutine(Heartbeat());
         }
     }
+    protected void StopMove()
+    {
+        if (heartbeat != null)
+        {
+            findTarget = false;
+            StopCoroutine(heartbeat);
+        }
+        navMeshAgent.speed = 0;
+        navMeshAgent.isStopped = true;//stop move npc
+    }
     IEnumerator Heartbeat()
     {
         navMeshAgent.destination = target;
@@ -113,20 +132,53 @@ public class Civilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         findTarget = true;
         heartbeat = null;
     }
+    #region  Car
+    public void InviteToCar(Car _car)
+    {
+        if (!onInvite)
+        {
+            onInvite = true;
+            StartCoroutine(GoToCar(_car));
+        }
+    }
+    public virtual IEnumerator GoToCar(Car _carTarget)
+    {
+        //play animation run
+        car = _carTarget;
+        navMeshAgent.speed = afterFearSpeed;
+        bool canGetInCar = false;
+        target = _carTarget.transform.position;
+        while (transform.position != target && !canGetInCar)
+        {
+            if (navMeshAgent.remainingDistance <= getInCarDistance && navMeshAgent.remainingDistance > 0)
+            {
+                canGetInCar = true;
+            }
+            yield return true;
+        }
+        StopMove();
+        yield return new WaitForSeconds(1f);
+        _carTarget.AddHumans(this.gameObject);
+        ExtarActionInCar();
+    }
+    public virtual void ExtarActionInCar() { }
 
     public void AddInCar(GameObject _waitPosition)
     {
-        if (heartbeat != null)//stop find npc
-        {
-            StopCoroutine(heartbeat);
-        }
-        navMeshAgent.isStopped = true;//stop move npc
-        transform.position = _waitPosition.transform.position;
         transform.SetParent(_waitPosition.transform);
+        transform.localPosition = Vector3.zero;
+        rb.interpolation = RigidbodyInterpolation.None;
     }
-
-    public void invisible()
+    public void CarStar()
     {
+        navMeshAgent.enabled = false;
         myModel.SetActive(false);
     }
+    public void OutCar()
+    {
+        findTarget = true;
+        target = newTargetOut;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
+    #endregion
 }

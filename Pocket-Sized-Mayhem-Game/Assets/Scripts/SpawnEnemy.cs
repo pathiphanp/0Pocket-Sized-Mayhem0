@@ -67,7 +67,7 @@ public class SpawnEnemy : MonoBehaviour
                 {
                     Vector3 randomPosition = Random.insideUnitCircle * radiusSpawn;
                     randomPosition = new Vector3(randomPosition.x, centerSpawn.y, randomPosition.y) + centerSpawn;
-                    Civilian nPCnormal = Instantiate(civilian, randomPosition, civilian.transform.rotation).GetComponent<Civilian>();
+                    NpcCivilian nPCnormal = Instantiate(civilian, randomPosition, civilian.transform.rotation).GetComponent<NpcCivilian>();
                     nPCnormal.targetOut = portal;
                 }
             }

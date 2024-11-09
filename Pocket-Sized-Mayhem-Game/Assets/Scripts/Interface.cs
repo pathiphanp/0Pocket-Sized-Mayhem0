@@ -11,7 +11,12 @@ namespace Interface
     public interface AddInCar<T>
     {
         void AddInCar(T _waitPosition);
-        void invisible();
+        void CarStar();
+    }
+    public interface Invite
+    {
+        void InviteToCar(Car _car);
+        void OutCar();
     }
 }
 

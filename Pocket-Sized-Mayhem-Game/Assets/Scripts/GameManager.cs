@@ -90,7 +90,7 @@ public class GameManager : Singleton<GameManager>
         DescriptionCutScenes descriptionCutScenesStartGame = uiManager.FindDescriptionCutScenes("StartGame");
         descriptionCutScenesStartGame.cutScenesObject.SetActive(true);
         textEffectControl.StartReadText(descriptionCutScenesStartGame.description, descriptionCutScenesStartGame.textCutScens);
-        yield return new WaitForSeconds(5f);//Wait CutScenes
+        yield return new WaitForSeconds(descriptionCutScenesStartGame.durationCutScenes);//Wait CutScenes
         descriptionCutScenesStartGame.cutScenesObject.SetActive(false);
         uiManager.ChangeCamera(uiManager.gameplayCamera);
         yield return new WaitForSeconds(2f);//Wait CutScenes
