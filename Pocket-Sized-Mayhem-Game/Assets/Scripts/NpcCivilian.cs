@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
 
-public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite
+public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite, Dodge
 {
     Rigidbody rb;
     [SerializeField] GameObject myModel;
@@ -15,15 +15,18 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     [HideInInspector] public GameObject targetOut;
     [SerializeField] protected Vector3 newTargetOut;
     [SerializeField] GameObject targetFear;
-    protected NavMeshAgent navMeshAgent;
 
+    protected NavMeshAgent navMeshAgent;
     [SerializeField] float heartbeatDuration;
+    Coroutine heartbeat;
     bool findTarget = true;
 
     [Header("Speed Setting")]
     [SerializeField] float bornSpeed;
     [SerializeField] float fearSpeed;
     [SerializeField] float afterFearSpeed;
+    [SerializeField] float dodgeSpeed;
+    float speed;
     [Header("Fear Setting")]
     [SerializeField] float radiusFear;
     [SerializeField] float fearDuration;
@@ -34,10 +37,13 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     [Header("Car")]
     [SerializeField] float getInCarDistance;
     protected Car car;
-    bool onInvite = false;
+    protected bool onInvite = false;
     TargetType type = TargetType.NPC;
-
-    Coroutine heartbeat;
+    [HideInInspector] bool onCar = false;
+    [Header("Dodge")]
+    [SerializeField] float dodgeDistance;
+    [SerializeField] float dodgeDuration;
+    Coroutine coroutineDodge = null;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,9 +54,11 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         SetUpTarget();
         HeartbeatNavMash();
     }
-    void SetUpHumansBorn()
+    public virtual void SetUpHumansBorn()
     {
-        navMeshAgent.speed = bornSpeed;
+        speed = bornSpeed;
+        navMeshAgent.speed = speed;
+
         //play animation walk
     }
     public virtual void SetUpTarget()
@@ -60,13 +68,6 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         newTargetOut = new Vector3(newTargetOut.x, 0, newTargetOut.y) + targetOut.transform.position;
         target = newTargetOut;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        HeartbeatNavMash();
-    }
-
     public TargetType TakeDamage()
     {
         StopCoroutine(heartbeat);
@@ -88,8 +89,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
             Vector3 randomPosition = Random.insideUnitCircle * radiusFear;
             randomPosition = new Vector3(randomPosition.x, 0, randomPosition.y) + transform.position;
             targetFear.transform.position = randomPosition;
-            target = targetFear.transform.position;
-            navMeshAgent.speed = fearSpeed;
+            FastSetNewTargetNavMash(targetFear.transform.position,fearSpeed);
         }
 
     }
@@ -102,10 +102,13 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     {
         yield return new WaitForSeconds(fearDuration);
         //play animation run
-        target = newTargetOut;
-        // navMeshAgent.destination = targetOut.transform.position;
-        navMeshAgent.speed = afterFearSpeed;
+        FastSetNewTargetNavMash(newTargetOut,afterFearSpeed);
         callfear = null;
+    }
+
+    protected void StopMove()
+    {
+        navMeshAgent.speed = 0;
     }
     void HeartbeatNavMash()
     {
@@ -115,22 +118,13 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
             heartbeat = StartCoroutine(Heartbeat());
         }
     }
-    protected void StopMove()
-    {
-        if (heartbeat != null)
-        {
-            findTarget = false;
-            StopCoroutine(heartbeat);
-        }
-        navMeshAgent.speed = 0;
-        navMeshAgent.isStopped = true;//stop move npc
-    }
     IEnumerator Heartbeat()
     {
         navMeshAgent.destination = target;
         yield return new WaitForSeconds(heartbeatDuration);
         findTarget = true;
         heartbeat = null;
+        HeartbeatNavMash();
     }
     #region  Car
     public void InviteToCar(Car _car)
@@ -145,9 +139,9 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     {
         //play animation run
         car = _carTarget;
-        navMeshAgent.speed = afterFearSpeed;
         bool canGetInCar = false;
-        target = _carTarget.transform.position;
+        FastSetNewTargetNavMash(_carTarget.transform.position,afterFearSpeed);
+        yield return new WaitForSeconds(0.5f);
         while (transform.position != target && !canGetInCar)
         {
             if (navMeshAgent.remainingDistance <= getInCarDistance && navMeshAgent.remainingDistance > 0)
@@ -158,27 +152,93 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         }
         StopMove();
         yield return new WaitForSeconds(1f);
-        _carTarget.AddHumans(this.gameObject);
-        ExtarActionInCar();
+        _carTarget.AddHumansToCar(this.gameObject);
+        ExtarActionInCar(_carTarget);
     }
-    public virtual void ExtarActionInCar() { }
+    public virtual void ExtarActionInCar(Car _carTarget) { }
 
     public void AddInCar(GameObject _waitPosition)
     {
+        onCar = true;
+        onInvite = true;
         transform.SetParent(_waitPosition.transform);
         transform.localPosition = Vector3.zero;
         rb.interpolation = RigidbodyInterpolation.None;
     }
-    public void CarStar()
+    public virtual void OutCar()
     {
-        navMeshAgent.enabled = false;
-        myModel.SetActive(false);
-    }
-    public void OutCar()
-    {
-        findTarget = true;
-        target = newTargetOut;
+        onCar = false;
+        transform.SetParent(null);
+        ChangeTargetToPortal();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
+    public void CarStar()
+    {
+        StopMove();
+        myModel.SetActive(false);
+    }
+
+    public virtual void ChangeTargetToPortal()
+    {
+        onInvite = false;
+        findTarget = true;
+        FastSetNewTargetNavMash(newTargetOut,speed);
+    }
     #endregion
+    public void Dodge(GameObject _targetDodge)
+    {
+        Vector3 directionToTarget = transform.position - _targetDodge.transform.position;
+        float crossProduct = Vector3.Cross(transform.transform.forward, directionToTarget).y;
+        int _direction = 0;
+        if (crossProduct < 0)
+        {
+            // Debug.Log("Target อยู่ทางขวาของ Reference");
+            _direction = 0;
+        }
+        else if (crossProduct > 0)
+        {
+            // Debug.Log("Target อยู่ทางซ้ายของ Reference");
+            _direction = 1;
+        }
+        else
+        {
+            // Debug.Log("Target อยู่ตรงกลางกับ Reference (ด้านหน้า/ด้านหลัง)");
+            _direction = Random.Range(0, 2);
+        }
+        if (coroutineDodge == null)
+        {
+            coroutineDodge = StartCoroutine(DodgeDuration(_direction));
+        }
+        else
+        {
+            StopCoroutine(coroutineDodge);
+            coroutineDodge = null;
+            coroutineDodge = StartCoroutine(DodgeDuration(_direction));
+        }
+    }
+    IEnumerator DodgeDuration(int _direction)
+    {
+        Vector3 _newtargetDoge = Vector3.zero;
+        if (_direction == 0)
+        {
+            _newtargetDoge += Vector3.left * dodgeDistance;
+        }
+        else
+        {
+            _newtargetDoge -= Vector3.left * dodgeDistance;
+        }
+        _newtargetDoge += transform.position;
+        FastSetNewTargetNavMash(_newtargetDoge, dodgeSpeed);
+        yield return new WaitForSeconds(dodgeDuration);
+        ChangeTargetToPortal();
+        coroutineDodge = null;
+    }
+
+    void FastSetNewTargetNavMash(Vector3 _targetPosition, float _speed)
+    {
+        speed = _speed;
+        navMeshAgent.speed = speed;
+        target = _targetPosition;
+        navMeshAgent.destination = _targetPosition;
+    }
 }

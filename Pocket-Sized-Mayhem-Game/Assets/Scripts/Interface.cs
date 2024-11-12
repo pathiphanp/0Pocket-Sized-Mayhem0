@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Interface
 {
     public interface TakeDamage
@@ -16,7 +18,12 @@ namespace Interface
     public interface Invite
     {
         void InviteToCar(Car _car);
-        void OutCar();
+        void ChangeTargetToPortal();
+    }
+
+    public interface Dodge
+    {
+        void Dodge(GameObject _targetDodge);
     }
 }
 

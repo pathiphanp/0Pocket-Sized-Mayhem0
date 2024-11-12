@@ -1,47 +1,55 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Interface;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Car : MonoBehaviour, TakeDamage
 {
+    Rigidbody rb;
+
     [SerializeField] float speedMove;
     [SerializeField] float speedRotation;
     [SerializeField] float speedMoveBack;
     [SerializeField] float speedMoveForward;
     [SerializeField] float durationMoveForward;
+    [Header("Navmesh")]
     [SerializeField] float heartbeatDuration;
     Coroutine heartbeatNav;
-    [SerializeField] CarWaitPosition[] waitPosition;
     NavMeshAgent carNavMeshAgent;
-    Rigidbody rb;
 
-    [SerializeField] float fuel;
-
+    [Header("Driver")]
     NpcDriver npcDriver = null;
-
+    List<NpcDriver> npcDriverTargetCar = new List<NpcDriver>();
     int countHumansInCar = 0;
     [Header("CarPart")]
+    [SerializeField] CarWaitPosition[] waitPosition;
     [SerializeField] Transform[] backCar;
     [SerializeField] float backCarcheckDistance;
     [SerializeField] LayerMask layerMaskBuildubg;
-
+    [SerializeField] float fuel;
+    [Header("Dodge Triger")]
+    [SerializeField] GameObject dodgeTrigerObj;
+    [SerializeField] float dodgeTrigerRadius;
     [Header("Explode")]
     [SerializeField] float explodeRadius;
     [SerializeField] LayerMask npc;
 
-
     Vector3 targetOut;
+    [HideInInspector] public bool carOnStart = false;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         carNavMeshAgent = GetComponent<NavMeshAgent>();
-        carNavMeshAgent.isStopped = true;
         carNavMeshAgent.speed = 0;
-        Explode();
+        dodgeTrigerObj.GetComponent<SphereCollider>().radius = dodgeTrigerRadius;
     }
+
     public void StartCar(Vector3 _targetOut)
     {
+        dodgeTrigerObj.SetActive(true);
+        carOnStart = true;
         //off all humans
         foreach (CarWaitPosition w in waitPosition)
         {
@@ -51,30 +59,56 @@ public class Car : MonoBehaviour, TakeDamage
                 w.humans.gameObject.SetActive(false);
             }
         }
-        carNavMeshAgent.isStopped = false;
         carNavMeshAgent.destination = _targetOut;
         targetOut = _targetOut;
         StartCoroutine(CheckForwordToTarget(_targetOut));
         StartCoroutine(FuelDuration());
     }
-    public void AddHumans(GameObject _human)
+    public void AddHumansToCar(GameObject _human)
     {
         CarWaitPosition _carWaitPosition = FindEmptyWaitPosition();
-        _carWaitPosition.humans = _human;
-        _human.GetComponent<AddInCar<GameObject>>().AddInCar(_carWaitPosition.waitPosition);
-        _carWaitPosition.empty = false;
-        countHumansInCar++;
-        if (countHumansInCar == 4)
+        if (_carWaitPosition != null && !carOnStart)
         {
-            npcDriver.StartDriveCar();
+            if (_carWaitPosition.empty)
+            {
+                _carWaitPosition.humans = _human;
+                _human.GetComponent<AddInCar<GameObject>>().AddInCar(_carWaitPosition.waitPosition);
+                _carWaitPosition.empty = false;
+                if (npcDriver != null && _human != npcDriver.gameObject)
+                {
+                    npcDriver.otherHumans.Remove(_human.GetComponent<Invite>());
+                }
+                countHumansInCar++;
+                if (countHumansInCar == 4)
+                {
+                    npcDriver.StartDriveCar();
+                }
+            }
+        }
+        else
+        {
+            Debug.Log(_human.name);
+            _human.GetComponent<Invite>().ChangeTargetToPortal();
         }
     }
-    public void AddNpcDriver(NpcDriver _npcDriver)
+    public bool CheckHaveNpcDriver(NpcDriver _npcDriver)
+    {
+        if (npcDriver == null)
+        {
+            npcDriverTargetCar.Add(_npcDriver);
+            return true;
+        }
+        return false;
+    }
+    public bool AddDriver(NpcDriver _npcDriver)
     {
         if (npcDriver == null)
         {
             npcDriver = _npcDriver;
+            npcDriverTargetCar.Clear();
+            return true;
         }
+        return false;
     }
     CarWaitPosition FindEmptyWaitPosition()
     {
@@ -93,7 +127,7 @@ public class Car : MonoBehaviour, TakeDamage
         carNavMeshAgent.speed = speedRotation;
         Vector3 directionToTarget = FindAnyObjectByType<Portal>().gameObject.transform.position - transform.position;
         float angle = Vector3.Angle(transform.forward, directionToTarget);
-        while (angle >= 25f)
+        while (angle >= 30f)
         {
             int checkBackCarCount = 0;
             //Check angle
@@ -106,15 +140,12 @@ public class Car : MonoBehaviour, TakeDamage
                 {
                     //move forward if back Car hit anything
                     checkBackCarCount++;
-                    carNavMeshAgent.speed = 0;
                     StartCoroutine(MoveForward());
                     yield return new WaitForSeconds(durationMoveForward);
                 }
             }
             //move back not hit anything
-            carNavMeshAgent.speed = speedRotation;
             transform.position -= transform.forward * speedMoveBack;
-
             yield return true;
         }
         speedMoveBack = 0;
@@ -140,7 +171,6 @@ public class Car : MonoBehaviour, TakeDamage
         yield return new WaitForSeconds(heartbeatDuration);
         heartbeatNav = StartCoroutine(Heartbeat());
     }
-
 
     public TargetType TakeDamage()
     {
