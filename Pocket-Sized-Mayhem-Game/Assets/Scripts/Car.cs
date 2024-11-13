@@ -87,8 +87,7 @@ public class Car : MonoBehaviour, TakeDamage
         }
         else
         {
-            Debug.Log(_human.name);
-            _human.GetComponent<Invite>().ChangeTargetToPortal();
+                _human.GetComponent<Invite>().ChangeTargetToPortal();
         }
     }
     public bool CheckHaveNpcDriver(NpcDriver _npcDriver)

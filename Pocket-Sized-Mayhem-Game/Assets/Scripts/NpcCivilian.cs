@@ -1,12 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Interface;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
 
+public enum NpcState
+{
+    Walk,Run,Car
+}
 public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite, Dodge
 {
     Rigidbody rb;
@@ -89,7 +89,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
             Vector3 randomPosition = Random.insideUnitCircle * radiusFear;
             randomPosition = new Vector3(randomPosition.x, 0, randomPosition.y) + transform.position;
             targetFear.transform.position = randomPosition;
-            FastSetNewTargetNavMash(targetFear.transform.position,fearSpeed);
+            FastSetNewTargetNavMash(targetFear.transform.position, fearSpeed);
         }
 
     }
@@ -102,7 +102,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     {
         yield return new WaitForSeconds(fearDuration);
         //play animation run
-        FastSetNewTargetNavMash(newTargetOut,afterFearSpeed);
+        FastSetNewTargetNavMash(newTargetOut, afterFearSpeed);
         callfear = null;
     }
 
@@ -140,7 +140,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         //play animation run
         car = _carTarget;
         bool canGetInCar = false;
-        FastSetNewTargetNavMash(_carTarget.transform.position,afterFearSpeed);
+        FastSetNewTargetNavMash(_carTarget.transform.position, afterFearSpeed);
         yield return new WaitForSeconds(0.5f);
         while (transform.position != target && !canGetInCar)
         {
@@ -182,7 +182,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     {
         onInvite = false;
         findTarget = true;
-        FastSetNewTargetNavMash(newTargetOut,speed);
+        FastSetNewTargetNavMash(newTargetOut, speed);
     }
     #endregion
     public void Dodge(GameObject _targetDodge)

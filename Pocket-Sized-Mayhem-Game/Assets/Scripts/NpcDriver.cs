@@ -30,31 +30,20 @@ public class NpcDriver : NpcCivilian
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Car>() != null)
+        if (other.gameObject.GetComponent<Car>() != null && !findCar)
         {
-            // StopMove();
-            // carTarget.Add(other.gameObject.GetComponent<Car>());
-            // if (chooseCar != null)
-            // {
-            //     StopCoroutine(chooseCar);
-            //     chooseCar = null;
-            //     chooseCar = StartCoroutine(ChooseCar());
-            // }
-            // else
-            // {
-            //     chooseCar = StartCoroutine(ChooseCar());
-            // }
-            // float carDistance = Vector3.Distance(transform.position, other.gameObject.transform.position);
-            // if (lastCarDistance == 0)
-            // {
-            //     lastCarDistance = carDistance;
-            //     carTarget = other.gameObject.GetComponent<Car>();
-            // }
-            // if (carDistance < lastCarDistance)
-            // {
-            //     lastCarDistance = carDistance;
-            //     carTarget = other.gameObject.GetComponent<Car>();
-            // }
+            StopMove();
+            carTarget.Add(other.gameObject.GetComponent<Car>());
+            if (chooseCar != null)
+            {
+                StopCoroutine(chooseCar);
+                chooseCar = null;
+                chooseCar = StartCoroutine(ChooseCar(carTarget));
+            }
+            else
+            {
+                chooseCar = StartCoroutine(ChooseCar(carTarget));
+            }
         }
         if (other.gameObject.GetComponent<Invite>() != null && invite)
         {
@@ -72,24 +61,31 @@ public class NpcDriver : NpcCivilian
     IEnumerator ChooseCar(List<Car> _carTarget)
     {
         Car newCarTarget = null;
-        UnityEngine.Debug.Log("check many car");
         yield return new WaitForSeconds(1f);
         if (carTarget.Count > 1)
         {
-            UnityEngine.Debug.Log("many car");
+            // UnityEngine.Debug.Log("many car");
             for (int i = 0; i < _carTarget.Count; i++)
             {
                 float carDistance = Vector3.Distance(transform.position, _carTarget[i].gameObject.transform.position);
-                
+                if (lastCarDistance == 0)
+                {
+                    lastCarDistance = carDistance;
+                    newCarTarget = _carTarget[i];
+                }
+                if (carDistance < lastCarDistance)
+                {
+                    lastCarDistance = carDistance;
+                    newCarTarget = _carTarget[i];
+                }
             }
         }
         else
         {
-            UnityEngine.Debug.Log("1 car");
+            // UnityEngine.Debug.Log("1 car");
             newCarTarget = _carTarget[0];
         }
-        UnityEngine.Debug.Log("Choose car");
-        if (!findCar && !newCarTarget.carOnStart)
+        if (!newCarTarget.carOnStart)
         {
             findCar = true;
             onInvite = true;
