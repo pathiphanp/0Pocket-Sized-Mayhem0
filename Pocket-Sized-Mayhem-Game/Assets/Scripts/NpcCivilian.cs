@@ -1,17 +1,19 @@
 using System.Collections;
 using Interface;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public enum NpcState
 {
-    Walk,Run,Car
+    Walk, Run, Car
 }
-public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite, Dodge
+public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>, Invite, Dodge, OutCar
 {
     Rigidbody rb;
     [SerializeField] GameObject myModel;
     protected Vector3 target;
+    protected Vector3 afterTarget;
     [HideInInspector] public GameObject targetOut;
     [SerializeField] protected Vector3 newTargetOut;
     [SerializeField] GameObject targetFear;
@@ -26,6 +28,7 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     [SerializeField] float fearSpeed;
     [SerializeField] float afterFearSpeed;
     [SerializeField] float dodgeSpeed;
+    float afterSpeed;
     float speed;
     [Header("Fear Setting")]
     [SerializeField] float radiusFear;
@@ -37,13 +40,39 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     [Header("Car")]
     [SerializeField] float getInCarDistance;
     protected Car car;
+    public Car Car
+    {
+        get
+        {
+            return car;
+        }
+    }
     protected bool onInvite = false;
     TargetType type = TargetType.NPC;
-    [HideInInspector] bool onCar = false;
+    public Coroutine callGoToCar;
+    bool onCar = false;
+    public bool OnCar
+    {
+        get
+        {
+            return onCar;
+        }
+    }
+    protected bool onGoToCar = false;
+    public bool OnGoToCar
+    {
+        get
+        {
+            return onGoToCar;
+        }
+    }
     [Header("Dodge")]
     [SerializeField] float dodgeDistance;
     [SerializeField] float dodgeDuration;
     Coroutine coroutineDodge = null;
+
+
+    bool isPaused = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,8 +86,8 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     public virtual void SetUpHumansBorn()
     {
         speed = bornSpeed;
+        afterSpeed = speed;
         navMeshAgent.speed = speed;
-
         //play animation walk
     }
     public virtual void SetUpTarget()
@@ -120,7 +149,10 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     }
     IEnumerator Heartbeat()
     {
-        navMeshAgent.destination = target;
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.destination = target;
+        }
         yield return new WaitForSeconds(heartbeatDuration);
         findTarget = true;
         heartbeat = null;
@@ -129,21 +161,26 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     #region  Car
     public void InviteToCar(Car _car)
     {
-        if (!onInvite)
+        if (!onInvite && !onCar && !onGoToCar)
         {
             onInvite = true;
-            StartCoroutine(GoToCar(_car));
+            callGoToCar = StartCoroutine(GoToCar(_car));
         }
     }
     public virtual IEnumerator GoToCar(Car _carTarget)
     {
         //play animation run
+        onGoToCar = true;
         car = _carTarget;
         bool canGetInCar = false;
         FastSetNewTargetNavMash(_carTarget.transform.position, afterFearSpeed);
         yield return new WaitForSeconds(0.5f);
         while (transform.position != target && !canGetInCar)
         {
+            while (isPaused)
+            {
+                yield return true;
+            }
             if (navMeshAgent.remainingDistance <= getInCarDistance && navMeshAgent.remainingDistance > 0)
             {
                 canGetInCar = true;
@@ -154,35 +191,63 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
         yield return new WaitForSeconds(1f);
         _carTarget.AddHumansToCar(this.gameObject);
         ExtarActionInCar(_carTarget);
+        callGoToCar = null;
     }
     public virtual void ExtarActionInCar(Car _carTarget) { }
 
     public void AddInCar(GameObject _waitPosition)
     {
+        onGoToCar = true;
         onCar = true;
         onInvite = true;
         transform.SetParent(_waitPosition.transform);
         transform.localPosition = Vector3.zero;
         rb.interpolation = RigidbodyInterpolation.None;
     }
-    public virtual void OutCar()
+    public Car myCarTarget()
     {
-        onCar = false;
-        transform.SetParent(null);
-        ChangeTargetToPortal();
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        return car;
     }
-    public void CarStar()
+    public virtual void OutCar(Vector3 _diraction)
+    {
+        navMeshAgent.isStopped = true;
+        onCar = false;
+        onGoToCar = false;
+        onInvite = false;
+        myModel.SetActive(true);
+        transform.SetParent(null);
+        navMeshAgent.enabled = false;
+        StartCoroutine(EjectedFromCar(_diraction));
+    }
+    IEnumerator EjectedFromCar(Vector3 _diraction)
+    {
+        rb.useGravity = true;
+        rb.AddForce((transform.up * 10) + (_diraction * 3), ForceMode.Impulse);
+        yield return new WaitForSeconds(0.64f);
+        rb.useGravity = false;
+        rb.Sleep();
+        navMeshAgent.enabled = true;
+        StopMove();
+        yield return new WaitForSeconds(1f);
+        ChangeTargetToPortal();
+    }
+    public void DoActionOnCarStar()
     {
         StopMove();
-        myModel.SetActive(false);
     }
 
     public virtual void ChangeTargetToPortal()
     {
+        if (callGoToCar != null)
+        {
+            StopCoroutine(callGoToCar);
+            callGoToCar = null;
+        }
         onInvite = false;
         findTarget = true;
-        FastSetNewTargetNavMash(newTargetOut, speed);
+        onGoToCar = false;
+        onCar = false;
+        FastSetNewTargetNavMash(newTargetOut, bornSpeed);
     }
     #endregion
     public void Dodge(GameObject _targetDodge)
@@ -218,27 +283,38 @@ public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>
     }
     IEnumerator DodgeDuration(int _direction)
     {
-        Vector3 _newtargetDoge = Vector3.zero;
-        if (_direction == 0)
+        if (!onCar)
         {
-            _newtargetDoge += Vector3.left * dodgeDistance;
+            isPaused = true;
+            Vector3 _newtargetDoge = Vector3.zero;
+            if (_direction == 0)
+            {
+                // Debug.Log("ไปทางซ้าย");
+                _newtargetDoge += (-transform.right + transform.forward).normalized * dodgeDistance;
+            }
+            else
+            {
+                // Debug.Log("ไปทางขวา");
+                _newtargetDoge += (transform.right + transform.forward).normalized * dodgeDistance;
+            }
+            _newtargetDoge += transform.position;
+            afterTarget = target;
+            FastSetNewTargetNavMash(_newtargetDoge, dodgeSpeed);
+            yield return new WaitForSeconds(dodgeDuration);
+            FastSetNewTargetNavMash(afterTarget, afterSpeed);
+            coroutineDodge = null;
+            isPaused = false;
         }
-        else
-        {
-            _newtargetDoge -= Vector3.left * dodgeDistance;
-        }
-        _newtargetDoge += transform.position;
-        FastSetNewTargetNavMash(_newtargetDoge, dodgeSpeed);
-        yield return new WaitForSeconds(dodgeDuration);
-        ChangeTargetToPortal();
-        coroutineDodge = null;
     }
 
     void FastSetNewTargetNavMash(Vector3 _targetPosition, float _speed)
     {
+        afterSpeed = speed;
         speed = _speed;
-        navMeshAgent.speed = speed;
         target = _targetPosition;
         navMeshAgent.destination = _targetPosition;
+        navMeshAgent.speed = speed;
     }
+
+
 }

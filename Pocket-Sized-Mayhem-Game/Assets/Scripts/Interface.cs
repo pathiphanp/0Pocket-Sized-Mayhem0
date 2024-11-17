@@ -13,12 +13,17 @@ namespace Interface
     public interface AddInCar<T>
     {
         void AddInCar(T _waitPosition);
-        void CarStar();
+        void DoActionOnCarStar();
+    }
+    public interface OutCar
+    {
+        void OutCar(Vector3 _diraction);
     }
     public interface Invite
     {
         void InviteToCar(Car _car);
         void ChangeTargetToPortal();
+        Car myCarTarget();
     }
 
     public interface Dodge

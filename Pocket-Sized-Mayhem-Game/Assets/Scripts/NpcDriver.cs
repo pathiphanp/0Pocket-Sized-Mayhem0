@@ -12,7 +12,7 @@ public class NpcDriver : NpcCivilian
     bool invite = false;
     [SerializeField] GameObject checkCarCollider;
 
-    [SerializeField] public List<Invite> otherHumans = new List<Invite>();
+    public List<Invite> otherHumans = new List<Invite>();
 
     List<Car> carTarget = new List<Car>();
     float lastCarDistance;
@@ -30,10 +30,11 @@ public class NpcDriver : NpcCivilian
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Car>() != null && !findCar)
+        if (other.gameObject.GetComponent<Car>() != null && other.gameObject.GetComponent<Car>().npcDriver == null && !findCar)
         {
             StopMove();
             carTarget.Add(other.gameObject.GetComponent<Car>());
+
             if (chooseCar != null)
             {
                 StopCoroutine(chooseCar);
@@ -48,7 +49,6 @@ public class NpcDriver : NpcCivilian
         if (other.gameObject.GetComponent<Invite>() != null && invite)
         {
             otherHumans.Add(other.gameObject.GetComponent<Invite>());
-            InviteOtherHumans();
         }
     }
     private void OnTriggerExit(Collider other)
@@ -85,17 +85,21 @@ public class NpcDriver : NpcCivilian
             // UnityEngine.Debug.Log("1 car");
             newCarTarget = _carTarget[0];
         }
-        if (!newCarTarget.carOnStart)
+        if (newCarTarget != null)
         {
-            findCar = true;
-            onInvite = true;
-            bool carNotDriver = newCarTarget.CheckHaveNpcDriver(this);//if driver null
-            if (carNotDriver)
+            if (!newCarTarget.carOnStart)
             {
-                StartCoroutine(GoToCar(newCarTarget));
+                findCar = true;
+                onInvite = true;
+                bool carNotDriver = newCarTarget.CheckHaveNpcDriver(this);//if driver null
+                if (carNotDriver)
+                {
+                    StartCoroutine(GoToCar(newCarTarget));
+                }
             }
+            chooseCar = null;
         }
-        chooseCar = null;
+
     }
     public override void ExtarActionInCar(Car _carTarget)
     {
@@ -120,6 +124,8 @@ public class NpcDriver : NpcCivilian
     }
     IEnumerator WaitOtherHumans()
     {
+        yield return new WaitForSeconds(0.5f);
+        InviteOtherHumans();
         yield return new WaitForSeconds(durationWaitOtherHumans);
         invite = false;
         //Stop Play Animation
@@ -132,6 +138,7 @@ public class NpcDriver : NpcCivilian
         {
             foreach (Invite oh in otherHumans)
             {
+                // UnityEngine.Debug.Log(oh);
                 oh.InviteToCar(car);
             }
         }
@@ -140,9 +147,12 @@ public class NpcDriver : NpcCivilian
     {
         if (otherHumans.Count > 0)
         {
-            foreach (Invite oh in otherHumans)
+            for (int i = 0; i < otherHumans.Count; i++)
             {
-                oh.ChangeTargetToPortal();
+                if (otherHumans[i].myCarTarget() == car)
+                {
+                    otherHumans[i].ChangeTargetToPortal();
+                }
             }
         }
     }
@@ -159,17 +169,21 @@ public class NpcDriver : NpcCivilian
         yield return new WaitForSeconds(1f);
         car.StartCar(newTargetOut);
     }
-    public override void OutCar()
+    public override void OutCar(Vector3 _diraction)
     {
-        base.OutCar();
+        base.OutCar(_diraction);
         findCar = false;
     }
 
     public override void ChangeTargetToPortal()
     {
-        findCar = false;
-        base.ChangeTargetToPortal();
-        ResetCheckCar();
+        if (!onGoToCar && !OnCar)
+        {
+            findCar = false;
+            onGoToCar = false;
+            base.ChangeTargetToPortal();
+            ResetCheckCar();
+        }
     }
 
     void ResetCheckCar()
