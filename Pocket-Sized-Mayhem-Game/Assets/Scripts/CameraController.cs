@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] GameObject mainCamare;
     [Header("Keyboard Move Setting")]
     [SerializeField] private int _cameraSpeed;
 
@@ -18,6 +19,9 @@ public class CameraController : MonoBehaviour
     bool onMouseMove = false;
     bool onMoveUpDown;
     bool onMoveLeftRight;
+
+
+    bool controlWithKeybord;
     private void Start()
     {
         _playerVirtualCamera = GetComponent<CinemachineVirtualCamera>();
@@ -35,12 +39,16 @@ public class CameraController : MonoBehaviour
         if (GameManager._instance.canPlayGame)
         {
             MoveWithKeyboard();
-            MoveWithMouse();
+            if (!controlWithKeybord)
+            {
+                MoveWithMouse();
+            }
         }
     }
 
     void MoveWithKeyboard()
     {
+        transform.position = mainCamare.transform.position;
         Vector3 cameraMovementDirection = new Vector3(_cameraMoveInput2D.x, 0f, _cameraMoveInput2D.y).normalized;
         _cameraMoveTarget = _playerVirtualCamera.transform.position;
         _cameraMoveTarget += ((Vector3.forward + Vector3.right) * _cameraMoveInput2D.y +
@@ -50,7 +58,6 @@ public class CameraController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, _cameraMoveTarget, Time.deltaTime * _cameraSpeed);
         }
-
     }
 
     void MoveWithMouse()

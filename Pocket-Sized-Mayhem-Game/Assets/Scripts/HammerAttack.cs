@@ -7,10 +7,6 @@ public class HammerAttack : MonoBehaviour
 {
     [SerializeField] GameObject fearAear;
     [SerializeField] List<GameObject> target = new List<GameObject>();
-    private void Start()
-    {
-
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<TakeDamage>() != null)
@@ -29,22 +25,24 @@ public class HammerAttack : MonoBehaviour
     {
         if (target.Count > 0)
         {
-            //Can Kill
             foreach (GameObject tg in target)
             {
-                if (tg.gameObject != null)
+                if (tg != null)
                 {
-                    if (tg.GetComponent<TakeDamage>().TakeDamage() == TargetType.NPC)
+                    if (tg.GetComponent<TakeDamage>() != null)
                     {
-                        GameManager._instance.AddPointPlayerKill();
+                        if (tg.GetComponent<TakeDamage>().TakeDamage() != TargetType.Guard)
+                        {
+                            tg.gameObject.SetActive(false);
+                            tg.gameObject.SetActive(true);
+                            tg.GetComponent<TakeDamage>().TakeDamage();
+                            fearAear.transform.position = transform.position;
+                            fearAear.GetComponent<FearAreaControl>().CallFear();
+                        }
                     }
-                    tg.GetComponent<TakeDamage>().TakeDamage();
-                    fearAear.transform.position = transform.position;
-                    fearAear.GetComponent<FearAreaControl>().CallFear();
                 }
             }
         }
         target.Clear();
     }
-
 }

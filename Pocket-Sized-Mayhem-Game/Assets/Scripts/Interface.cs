@@ -25,10 +25,24 @@ namespace Interface
         void ChangeTargetToPortal();
         Car myCarTarget();
     }
-
     public interface Dodge
     {
         void Dodge(GameObject _targetDodge);
+        void RemoveDodge();
+
+    }
+
+    public interface SetObjectPool<T>
+    {
+        void AddPool(T _objectPool);
+        void ReturnToPool();
+        void ResetStatus();
+        void SetUpStartGame();
+    }
+
+    public interface GuardEffectProtect
+    {
+        void AddGuardEffect();
     }
 }
 

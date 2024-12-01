@@ -17,7 +17,6 @@ public class NpcDriver : NpcCivilian
     List<Car> carTarget = new List<Car>();
     float lastCarDistance;
     Coroutine chooseCar;
-
     public override void SetUpHumansBorn()
     {
         base.SetUpHumansBorn();
@@ -67,7 +66,11 @@ public class NpcDriver : NpcCivilian
             // UnityEngine.Debug.Log("many car");
             for (int i = 0; i < _carTarget.Count; i++)
             {
-                float carDistance = Vector3.Distance(transform.position, _carTarget[i].gameObject.transform.position);
+                float carDistance = 0;
+                if (_carTarget[i].gameObject != null)
+                {
+                    carDistance = Vector3.Distance(transform.position, _carTarget[i].gameObject.transform.position);
+                }
                 if (lastCarDistance == 0)
                 {
                     lastCarDistance = carDistance;
@@ -101,7 +104,7 @@ public class NpcDriver : NpcCivilian
         }
 
     }
-    public override void ExtarActionInCar(Car _carTarget)
+    public override void ExtraActionInCar(Car _carTarget)
     {
         findCar = true;
         if (_carTarget.AddDriver(this))
@@ -147,6 +150,13 @@ public class NpcDriver : NpcCivilian
     {
         if (otherHumans.Count > 0)
         {
+            foreach (CarWaitPosition cw in car.waitPosition)
+            {
+                if (cw.humans != null)
+                {
+                    otherHumans.Remove(cw.humans.GetComponent<Invite>());
+                }
+            }
             for (int i = 0; i < otherHumans.Count; i++)
             {
                 if (otherHumans[i].myCarTarget() == car)

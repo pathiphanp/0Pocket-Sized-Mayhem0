@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Gameplay Scenes/GameScene - M3.unity
-    guid: 435e4df481ecd7245809b309a537d616
+    path: Assets/Scenes/GameSceneTestUmp.unity
+    guid: 9c98260b78f86fd4ea55e7d974dad114
+  - enabled: 1
+    path: Assets/Scenes/Gameplay Scenes/GameScene-Lighting.unity
+    guid: 1d126f586df0240428c49af34e012f3b
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

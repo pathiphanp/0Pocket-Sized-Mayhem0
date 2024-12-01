@@ -35,8 +35,10 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] float hammerMoveSpeed;
     [SerializeField] float attackUpDuration;
     [SerializeField] float hammerDownRotationSpeed;
+    [SerializeField] GameObject effectExprode;
     [Header("HammerUp")]
     [SerializeField] float hammerUpRotationSpeed;
+
 
     [SerializeField] bool canMove = false;
     bool canAttack = true;
@@ -45,9 +47,7 @@ public class PlayerControl : MonoBehaviour
 
     public float sensitivity = 0.1f;
     private Vector3 lastMousePosition;
-
     public Camera mainCamera;
-
 
     // Start is called before the first frame update
     void Start()
@@ -59,7 +59,6 @@ public class PlayerControl : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         SetUpHammer();
         lastMousePosition = Input.mousePosition;
-
     }
     void SetUpHammer()
     {
@@ -147,6 +146,7 @@ public class PlayerControl : MonoBehaviour
             , ChargeAngleZ);
             yield return true;
         }
+        effectExprode.SetActive(true);
         hammerAttack.CallHammerAttack();
         #endregion
         #region Hammer return to Ready Attack
@@ -182,6 +182,7 @@ public class PlayerControl : MonoBehaviour
             yield return true;
         }
         hammerHandlePivot.transform.eulerAngles = new Vector3(0, -90, 0);
+        effectExprode.SetActive(false);
         canMove = true;
         canAttack = true;
         onAttack = false;

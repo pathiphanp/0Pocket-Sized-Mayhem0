@@ -20,7 +20,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] TMP_Text humansEscapedText;
 
     [Header("Player Win")]
-    [SerializeField] public GameObject playerWinUi;
+    [SerializeField] public GameObject statusReport;
+    [SerializeField] public TMP_Text report;
     [SerializeField] TMP_Text scorePlayerKillText;
     [SerializeField] TMP_Text scoreHumansEscapedText;
 

@@ -7,7 +7,7 @@ public class Portal : MonoBehaviour
         if(other.gameObject.GetComponent<NpcCivilian>() != null)
         {
             GameManager._instance.AddPointHumansEscaped();
-            other.gameObject.GetComponent<NpcCivilian>().TakeDamage();
+            other.gameObject.GetComponent<NpcCivilian>().OutPotal();
         }
     }
 }

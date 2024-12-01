@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum TargetType
 {
-    NPC, Building
+    None, NPC, Building, Guard
 }
 public class GameManager : Singleton<GameManager>
 {
@@ -27,11 +27,14 @@ public class GameManager : Singleton<GameManager>
     {
         playerControl.gameObject.SetActive(false);
     }
-    public void AddPointPlayerKill()
+    public void AddPointPlayerKill(TargetType targetType)
     {
-        string report = playerKill++.ToString() + " / " + playerWinPoint;
-        uiManager.UpdateUiHumansKill(report);
-        RemoveTotalHumans();
+        if (targetType == TargetType.NPC)
+        {
+            string report = playerKill++.ToString() + " / " + playerWinPoint;
+            uiManager.UpdateUiHumansKill(report);
+            RemoveTotalHumans();
+        }
     }
     public void AddPointHumansEscaped()
     {
@@ -45,7 +48,16 @@ public class GameManager : Singleton<GameManager>
         if (totalHumans == 0)
         {
             StopGame();
-            uiManager.playerWinUi.SetActive(true);
+            uiManager.statusReport.SetActive(true);
+            if (playerKill > playerWinPoint)
+            {
+                uiManager.report.text = "You Win";
+                //next wave
+            }
+            else
+            {
+                uiManager.report.text = "Game Over";
+            }
             StartCoroutine(StartShowPlayerKill());
             StartCoroutine(StartShowHumansEscaped());
         }

@@ -598,6 +598,7 @@ MonoBehaviour:
   hammerMoveSpeed: 150
   attackUpDuration: 0.15
   hammerDownRotationSpeed: 1050
+  effectExprode: {fileID: 0}
   hammerUpRotationSpeed: 1000
   canMove: 1
   sensitivity: 1
@@ -8128,8 +8129,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portal: {fileID: 1651954646}
-  civilian: {fileID: 3961760982843065667, guid: 7e19599bd177502428b91904ddf623aa,
-    type: 3}
+  npc_Pool: {fileID: 0}
+  npc_Driver: {fileID: 0}
   spawnPositions:
   - side: 0
     positionSpawn:
@@ -13564,7 +13565,8 @@ MonoBehaviour:
   totalHumansText: {fileID: 1999840817}
   humansKillText: {fileID: 918299486}
   humansEscapedText: {fileID: 1924943348}
-  playerWinUi: {fileID: 1864226934}
+  statusReport: {fileID: 0}
+  report: {fileID: 0}
   scorePlayerKillText: {fileID: 1519870870}
   scoreHumansEscapedText: {fileID: 1589516877}
   descriptionCutScenes:
@@ -13899,6 +13901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afa9c810fdc8b7f47ab7bb74b5185ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carModel: {fileID: 0}
   speedMove: 12
   speedRotation: 0.5
   speedMoveBack: 0.05
@@ -13928,8 +13931,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16777216
   fuel: 3
+  fuelMinDuration: 0
+  fuelMaxDuration: 0
   dodgeTrigerObj: {fileID: 1286127143}
   dodgeTrigerRadius: 7
+  explodeEffect: {fileID: 0}
   explodeRadius: 6.19
   npc:
     serializedVersion: 2
@@ -15444,6 +15450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afa9c810fdc8b7f47ab7bb74b5185ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carModel: {fileID: 0}
   speedMove: 12
   speedRotation: 0.5
   speedMoveBack: 0.05
@@ -15473,8 +15480,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16777216
   fuel: 3
+  fuelMinDuration: 0
+  fuelMaxDuration: 0
   dodgeTrigerObj: {fileID: 381784351}
   dodgeTrigerRadius: 7
+  explodeEffect: {fileID: 0}
   explodeRadius: 6.19
   npc:
     serializedVersion: 2

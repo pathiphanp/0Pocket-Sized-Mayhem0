@@ -7,7 +7,11 @@ using UnityEngine.AI;
 
 public class Car : MonoBehaviour, TakeDamage
 {
+    Collider coll;
     Rigidbody rb;
+    [SerializeField] GameObject carModel;
+
+    [Header("Speed")]
     [SerializeField] float speedMove;
     [SerializeField] float speedRotation;
     [SerializeField] float speedMoveBack;
@@ -24,15 +28,18 @@ public class Car : MonoBehaviour, TakeDamage
     List<NpcDriver> npcDriverTargetCar = new List<NpcDriver>();
     int countHumansInCar = 0;
     [Header("CarPart")]
-    [SerializeField] CarWaitPosition[] waitPosition;
+    [SerializeField] public CarWaitPosition[] waitPosition;
     [SerializeField] Transform[] backCar;
     [SerializeField] float backCarcheckDistance;
     [SerializeField] LayerMask layerMaskBuildubg;
     [SerializeField] float fuel;
+    [SerializeField] float fuelMinDuration;
+    [SerializeField] float fuelMaxDuration;
     [Header("Dodge Triger")]
     [SerializeField] GameObject dodgeTrigerObj;
     [SerializeField] float dodgeTrigerRadius;
     [Header("Explode")]
+    [SerializeField] ParticleSystem explodeEffect;
     [SerializeField] float explodeRadius;
     [SerializeField] LayerMask npc;
 
@@ -41,15 +48,20 @@ public class Car : MonoBehaviour, TakeDamage
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        coll = GetComponent<Collider>();
         carBroken = GetComponent<NavMeshObstacle>();
         carNavMeshAgent = GetComponent<NavMeshAgent>();
         carNavMeshAgent.speed = 0;
         dodgeTrigerObj.GetComponent<SphereCollider>().radius = dodgeTrigerRadius;
     }
-
+    #region CarStart
     public void StartCar(Vector3 _targetOut)
     {
-        fuel = Random.Range(7f, 12f);
+        StartCoroutine(CallStartCar(_targetOut));
+    }
+    IEnumerator CallStartCar(Vector3 _targetOut)
+    {
+        fuel = Random.Range(fuelMinDuration, fuelMaxDuration);
         dodgeTrigerObj.SetActive(true);
         carOnStart = true;
         //off all humans
@@ -61,11 +73,14 @@ public class Car : MonoBehaviour, TakeDamage
                 w.humans.SetActive(false);
             }
         }
+        yield return new WaitForSeconds(0.5f);
         carNavMeshAgent.destination = _targetOut;
         targetOut = _targetOut;
         StartCoroutine(CheckForwordToTarget(_targetOut));
         StartCoroutine(FuelDuration());
     }
+    #endregion
+    #region AddHuman InCar
     public void AddHumansToCar(GameObject _human)
     {
         CarWaitPosition _carWaitPosition = FindEmptyWaitPosition();
@@ -92,6 +107,7 @@ public class Car : MonoBehaviour, TakeDamage
             _human.GetComponent<Invite>().ChangeTargetToPortal();
         }
     }
+    #endregion
     public bool CheckHaveNpcDriver(NpcDriver _npcDriver)
     {
         if (npcDriver == null)
@@ -112,6 +128,7 @@ public class Car : MonoBehaviour, TakeDamage
                 foreach (NpcDriver nDc in npcDriverTargetCar)
                 {
                     // Debug.Log(nDc.name);
+                    // Remove other Driver
                     nDc.ChangeTargetToPortal();
                 }
             }
@@ -170,17 +187,21 @@ public class Car : MonoBehaviour, TakeDamage
         rb.Sleep();
 
     }
+    #region Fuel Control
     IEnumerator FuelDuration()
     {
         yield return new WaitForSeconds(fuel);
         carNavMeshAgent.speed = 0;
-        carNavMeshAgent.isStopped = true;
+        carNavMeshAgent.enabled = false;
         dodgeTrigerObj.SetActive(false);
         StopAllCoroutines();
         rb.Sleep();
         rb.velocity = Vector3.zero;
         EjectHumans();
     }
+    #endregion
+
+    #region EjectHumans
     void EjectHumans()
     {
         bool leftRigth = false;
@@ -205,19 +226,46 @@ public class Car : MonoBehaviour, TakeDamage
         }
         carBroken.enabled = true;
     }
+    #endregion
     IEnumerator Heartbeat()
     {
         carNavMeshAgent.destination = targetOut;
         yield return new WaitForSeconds(heartbeatDuration);
         heartbeatNav = StartCoroutine(Heartbeat());
     }
-
+    #region  Take Damage
     public TargetType TakeDamage()
     {
-        StopCoroutine(heartbeatNav);
-        Explode();
-        Destroy(this.gameObject);
+        carModel.SetActive(false);
+        explodeEffect.Play();
+        StopAllCoroutines();
+        carNavMeshAgent.speed = 0;
+        carNavMeshAgent.enabled = false;
+        StartCoroutine(CarDestroy());
         return TargetType.Building;
+    }
+    IEnumerator CarDestroy()
+    {
+        coll.enabled = false;
+        dodgeTrigerObj.SetActive(false);
+        if (heartbeatNav != null)
+        {
+            StopCoroutine(heartbeatNav);
+            heartbeatNav = null;
+        }
+        foreach (CarWaitPosition w in waitPosition)
+        {
+            if (w.humans != null)
+            {
+                w.humans.SetActive(true);
+                w.humans.transform.SetParent(null);
+                w.humans.GetComponent<TakeDamage>().TakeDamage();
+            }
+        }
+        yield return new WaitForSeconds(0.5f);
+        Explode();
+        yield return new WaitForSeconds(0.5f);
+        Destroy(this.gameObject);
     }
 
     void Explode()
@@ -233,7 +281,7 @@ public class Car : MonoBehaviour, TakeDamage
             }
         }
     }
-
+    #endregion
 
     private void OnDrawGizmos()
     {

@@ -10,7 +10,8 @@ public class SpawnEnemy : MonoBehaviour
 {
     [SerializeField] GameObject portal;
     [Header("Enemy Prefab")]
-    [SerializeField] GameObject civilian;
+    [SerializeField] NPC_ObjectPool npc_Pool;
+    [SerializeField] GameObject npc_Driver;
 
     [Header("Spawn Control")]
     [SerializeField] SpawnPosition[] spawnPositions;
@@ -38,42 +39,56 @@ public class SpawnEnemy : MonoBehaviour
 
     void ControlSpawnEnemy()
     {
-        if (canSpawn && totalHumans > 0)
+        if (canSpawn)
         {
-            for (int numWave = 0; numWave < bigwaveNum; numWave++)
+            canSpawn = false;
+            if (totalHumans > 0)
             {
-                #region Random Position Spawn
-                int rndPositionSpawn = Random.Range(0, spawnPositions.Length);
-                Vector3 centerSpawn = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position;
-                if (spawnPositions[rndPositionSpawn].side == SpawnSide.X_Side)
+                totalHumans -= (waveNum * bigwaveNum);
+                for (int numWave = 0; numWave < bigwaveNum; numWave++)
                 {
-                    float X_st = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position.x;
-                    float X_end = spawnPositions[rndPositionSpawn].positionSpawn[1].transform.position.x;
-                    float rndX = Random.Range(X_st, X_end);
-                    centerSpawn.x = rndX;
-                }
-                else
-                {
-                    float Z_st = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position.z;
-                    float Z_end = spawnPositions[rndPositionSpawn].positionSpawn[1].transform.position.z;
-                    float rndZ = Random.Range(Z_st, Z_end);
-                    centerSpawn.z = rndZ;
-                }
-                #endregion
-
-                totalHumans -= waveNum;
-                canSpawn = false;
-                for (int i = 0; i < waveNum; i++)
-                {
-                    Vector3 randomPosition = Random.insideUnitCircle * radiusSpawn;
-                    randomPosition = new Vector3(randomPosition.x, centerSpawn.y, randomPosition.y) + centerSpawn;
-                    NpcCivilian nPCnormal = Instantiate(civilian, randomPosition, civilian.transform.rotation).GetComponent<NpcCivilian>();
-                    nPCnormal.targetOut = portal;
+                    #region Random Position Spawn
+                    int rndPositionSpawn = Random.Range(0, spawnPositions.Length);
+                    Vector3 centerSpawn = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position;
+                    if (spawnPositions[rndPositionSpawn].side == SpawnSide.X_Side)
+                    {
+                        float X_st = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position.x;
+                        float X_end = spawnPositions[rndPositionSpawn].positionSpawn[1].transform.position.x;
+                        float rndX = Random.Range(X_st, X_end);
+                        centerSpawn.x = rndX;
+                    }
+                    else
+                    {
+                        float Z_st = spawnPositions[rndPositionSpawn].positionSpawn[0].transform.position.z;
+                        float Z_end = spawnPositions[rndPositionSpawn].positionSpawn[1].transform.position.z;
+                        float rndZ = Random.Range(Z_st, Z_end);
+                        centerSpawn.z = rndZ;
+                    }
+                    #endregion
+                    NpcCivilian new_Npc = null;
+                    for (int i = 0; i < waveNum; i++)
+                    {
+                        Vector3 randomPosition = Random.insideUnitCircle * radiusSpawn;
+                        randomPosition = new Vector3(randomPosition.x, centerSpawn.y, randomPosition.y) + centerSpawn;
+                        bool rndNpc = RandomChance._instance.GetRandomChance(90);
+                        if (rndNpc)
+                        {
+                            new_Npc = npc_Pool.Pool.Get().GetComponent<NpcCivilian>();
+                        }
+                        else
+                        {
+                            new_Npc = Instantiate(npc_Driver).GetComponent<NpcCivilian>();
+                            new_Npc.gameObject.SetActive(false);
+                        }
+                        new_Npc.transform.position = randomPosition;
+                        new_Npc.gameObject.SetActive(true);
+                        new_Npc.ResetStatus();
+                        new_Npc.targetOut = portal;
+                    }
                 }
             }
             StartCoroutine(CooldownSpawn());
         }
-
     }
     IEnumerator CooldownSpawn()
     {

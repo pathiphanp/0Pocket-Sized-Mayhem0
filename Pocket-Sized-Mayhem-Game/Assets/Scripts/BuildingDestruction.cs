@@ -21,34 +21,6 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
             _pieces.Add(piece);
         }
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-
-        if (other.gameObject.tag == "Mallet" && !_isDestoyed)
-        {
-            RuntimeManager.PlayOneShot(DeathSFX, this.gameObject.transform.position);
-            this.GetComponent<Rigidbody>().isKinematic = false;
-            foreach (GameObject piece in _pieces)
-            {
-                piece.AddComponent<Rigidbody>();
-                Vector3 direction = Random.insideUnitCircle.normalized;
-                piece.GetComponent<Rigidbody>().AddForce(direction * _force, ForceMode.Impulse);
-            }
-            _isDestoyed = true;
-            StartCoroutine(AssignDebri());
-        }
-    }
-
-    IEnumerator AssignDebri()
-    {
-        yield return new WaitForSeconds(1f);
-        foreach (GameObject piece in _pieces)
-        {
-            piece.layer = LayerMask.NameToLayer("Debris");
-        }
-    }
-
     public TargetType TakeDamage()
     {
         RuntimeManager.PlayOneShot(DeathSFX, this.gameObject.transform.position);
@@ -57,11 +29,13 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
         {
             if (piece.GetComponent<Rigidbody>() == null)
             {
-                piece.AddComponent<Rigidbody>();
+                BuildingScrap _Bs = piece.AddComponent<BuildingScrap>();
+                _Bs.rb = piece.AddComponent<Rigidbody>();
+                _Bs.rb.useGravity = true;
+                _Bs.Explode(_force);
             }
-            Vector3 direction = Random.insideUnitCircle.normalized;
-            piece.GetComponent<Rigidbody>().AddForce(direction * _force, ForceMode.Impulse);
         }
+        Destroy(this);
         return type;
     }
 }

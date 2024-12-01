@@ -12,4 +12,12 @@ public class DodgeTrigger : MonoBehaviour
             other.GetComponent<Dodge>().Dodge(this.gameObject);
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<Dodge>() != null)
+        {
+            other.GetComponent<Dodge>().RemoveDodge();
+        }
+    }
 }
