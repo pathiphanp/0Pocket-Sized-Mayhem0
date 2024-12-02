@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour
     [Header("HemmerControl")]
     [SerializeField] GameObject hammerHandlePivot;
     [SerializeField] GameObject hammerFacePivot;
-    [SerializeField] GameObject targetHitObject;
+    [SerializeField] public GameObject targetHitObject;
     [SerializeField] GameObject targetHitPosition;
     [SerializeField] LayerMask ground;
 

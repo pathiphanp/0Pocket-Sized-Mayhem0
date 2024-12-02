@@ -30,11 +30,10 @@ public class BuildingScrap : MonoBehaviour, TakeDamage
             }
         }
     }
-    public void Explode(float _force)
+    public void Explode(float _force,Vector3 _direction)
     {
         transform.SetParent(null);
-        Vector3 direction = Random.insideUnitCircle.normalized;
-        rb.AddForce(direction * _force, ForceMode.Impulse);
+        rb.AddForce(_direction.normalized * _force, ForceMode.Impulse);
         StartCoroutine(DelayCheck());
     }
     IEnumerator DelayCheck()

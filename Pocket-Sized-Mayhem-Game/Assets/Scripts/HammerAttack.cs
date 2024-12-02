@@ -33,8 +33,6 @@ public class HammerAttack : MonoBehaviour
                     {
                         if (tg.GetComponent<TakeDamage>().TakeDamage() != TargetType.Guard)
                         {
-                            tg.gameObject.SetActive(false);
-                            tg.gameObject.SetActive(true);
                             tg.GetComponent<TakeDamage>().TakeDamage();
                             fearAear.transform.position = transform.position;
                             fearAear.GetComponent<FearAreaControl>().CallFear();

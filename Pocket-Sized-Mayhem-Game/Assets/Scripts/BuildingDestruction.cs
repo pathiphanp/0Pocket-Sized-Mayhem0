@@ -11,6 +11,8 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
     private bool _isDestoyed;
     TargetType type = TargetType.Building;
     [field: SerializeField] public EventReference DeathSFX { get; set; }
+
+    [SerializeField] GameObject privot;
     void Start()
     {
         _isDestoyed = false;
@@ -32,7 +34,9 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
                 BuildingScrap _Bs = piece.AddComponent<BuildingScrap>();
                 _Bs.rb = piece.AddComponent<Rigidbody>();
                 _Bs.rb.useGravity = true;
-                _Bs.Explode(_force);
+                Vector3 _distance = (privot.transform.position - GameManager._instance.playerControl.targetHitObject.transform.position).normalized;
+                _distance.y = 0;
+                _Bs.Explode(_force, _distance);
             }
         }
         Destroy(this);

@@ -44,7 +44,6 @@ namespace Interface
     {
         void AddGuardEffect();
         void RemoveGuardEffect();
-
     }
 }
 
