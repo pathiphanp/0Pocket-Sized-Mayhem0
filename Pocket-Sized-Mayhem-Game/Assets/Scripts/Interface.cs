@@ -40,9 +40,11 @@ namespace Interface
         void SetUpStartGame();
     }
 
-    public interface GuardEffectProtect
+    public interface SetGuardEffectProtect
     {
         void AddGuardEffect();
+        void RemoveGuardEffect();
+
     }
 }
 

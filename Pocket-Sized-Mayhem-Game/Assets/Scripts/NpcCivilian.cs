@@ -9,7 +9,7 @@ public enum NpcState
     Walk, Run, Car
 }
 public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>,
-Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>,GuardEffectProtect
+Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectProtect
 {
     Rigidbody rb;
     Collider myCollider;
@@ -170,8 +170,10 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>,GuardEffectProtect
     public virtual void ExtraEffetNotDie() { }
     #endregion
     #region Die
+    public virtual void ExtraEffetDie() { }
     void Die()
     {
+        ExtraEffetDie();
         SetStatus(false);
         bloodEffect.transform.SetParent(null);
         bloodEffect.SetActive(true);
@@ -183,9 +185,8 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>,GuardEffectProtect
     #region Add Fear
     public void AddFear()
     {
-        if (canFear && !onCar)
+        if (canFear && !onCar && type != TargetType.Guard)
         {
-            // Debug.Log("Fear");
             navMeshAgent.speed = 0;
             //play animation fear run
             callCooldownFear = StartCoroutine(CooldownFearStatus());
@@ -489,6 +490,12 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>,GuardEffectProtect
 
     public void AddGuardEffect()
     {
-        
+        type = TargetType.Guard;
+    }
+
+    public void RemoveGuardEffect()
+    {
+        AddFear();
+        type = TargetType.NPC;
     }
 }
