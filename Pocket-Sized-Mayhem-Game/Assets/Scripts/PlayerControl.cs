@@ -113,6 +113,7 @@ public class PlayerControl : MonoBehaviour
 
     IEnumerator HammerAction()
     {
+        hammerAttack.checkGuardAear.SetActive(true);
         Vector3 startHammerPoint = hammerHandlePivot.transform.position;
         Vector3 hammerChargePos = new Vector3(hammerHandlePivot.transform.localPosition.x + chargeBack,
         hammerHandlePivot.transform.localPosition.y + chargeUp, hammerHandlePivot.transform.localPosition.z);
@@ -181,6 +182,7 @@ public class PlayerControl : MonoBehaviour
             , ChargeAngleZ);
             yield return true;
         }
+        hammerAttack.checkGuardAear.SetActive(false);
         hammerHandlePivot.transform.eulerAngles = new Vector3(0, -90, 0);
         effectExprode.SetActive(false);
         canMove = true;

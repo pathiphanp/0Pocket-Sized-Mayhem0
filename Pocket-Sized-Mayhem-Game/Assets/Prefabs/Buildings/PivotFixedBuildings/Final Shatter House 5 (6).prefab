@@ -178,7 +178,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 1, y: 1, z: 1}
+  m_Extents: {x: 1.23, y: 1.49, z: 1}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
@@ -260,9 +260,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _force: 0
   _pieces: []
-  _civilians: {fileID: 6660491637078578144, guid: 69ac7de5014f21449bcc16257cc17696,
-    type: 3}
-  _spawner: {fileID: 0}
   <DeathSFX>k__BackingField:
     Guid:
       Data1: -721403134
@@ -270,6 +267,7 @@ MonoBehaviour:
       Data3: 1073759619
       Data4: -1454832663
     Path: event:/SFX/Buildings/SFX_Destruction
+  privot: {fileID: 0}
 --- !u!1 &3852833914296491031
 GameObject:
   m_ObjectHideFlags: 0

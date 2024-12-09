@@ -6,6 +6,7 @@ using UnityEngine;
 public class HammerAttack : MonoBehaviour
 {
     [SerializeField] GameObject fearAear;
+    [SerializeField] public GameObject checkGuardAear;
     [SerializeField] List<GameObject> target = new List<GameObject>();
     private void OnTriggerEnter(Collider other)
     {
@@ -35,6 +36,7 @@ public class HammerAttack : MonoBehaviour
                         {
                             tg.GetComponent<TakeDamage>().TakeDamage();
                             fearAear.transform.position = transform.position;
+                            checkGuardAear.SetActive(true);
                             fearAear.GetComponent<FearAreaControl>().CallFear();
                         }
                     }

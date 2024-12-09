@@ -811,7 +811,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4032448438817242006}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.3
   m_Speed: 10
@@ -861,23 +861,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myModel: {fileID: 3708404560787055321}
   targetOut: {fileID: 0}
-  newTargetOut: {x: 0, y: 0, z: 0}
   targetFear: {fileID: 417258430605756629}
   heartbeatDuration: 5
-  bornSpeed: 2
+  walkSpeed: 2
+  runSpeed: 4
   fearSpeed: 6
-  runAfterFearSpeed: 4
-  durationRunAfterFear: 5
+  durationRun: 0
   dodgeSpeed: 5
   radiusFear: 20
   fearDuration: 5
   cooldownFear: 10
   getInCarDistance: 2.5
-  onCar: 0
   dodgeDistance: 3
   dodgeDuration: 2
   bloodEffect: {fileID: 2257330849162387486}
-  _delayReturnToPool: 5
   poolPosition: {fileID: 0}
   durationWaitOtherHumans: 15
   checkCarCollider: {fileID: 4125933577497494923}

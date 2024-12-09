@@ -1143,19 +1143,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myModel: {fileID: 6420295081876429845}
   targetOut: {fileID: 0}
-  newTargetOut: {x: 0, y: 0, z: 0}
   targetFear: {fileID: 42649319719319555}
   heartbeatDuration: 3
-  bornSpeed: 2
+  walkSpeed: 2
+  runSpeed: 4
   fearSpeed: 6
-  runAfterFearSpeed: 4
-  durationRunAfterFear: 5
+  durationRun: 0
   dodgeSpeed: 10
   radiusFear: 20
   fearDuration: 5
   cooldownFear: 10
   getInCarDistance: 2.5
-  onCar: 0
   dodgeDistance: 10
   dodgeDuration: 2
   bloodEffect: {fileID: 2972913671820326521}

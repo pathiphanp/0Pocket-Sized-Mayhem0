@@ -45,5 +45,9 @@ namespace Interface
         void AddGuardEffect();
         void RemoveGuardEffect();
     }
+    public interface GuardProtectAction
+    {
+        void GuardProtect(Vector3 _attackArea);
+    }
 }
 

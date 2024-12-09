@@ -3,6 +3,7 @@ using Interface;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
+using UnityEngine.Rendering.HighDefinition;
 
 public enum NpcState
 {
@@ -11,7 +12,7 @@ public enum NpcState
 public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>,
 Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectProtect
 {
-    Rigidbody rb;
+    protected Rigidbody rb;
     Collider myCollider;
     [SerializeField] GameObject myModel;
     protected Vector3 target;
@@ -20,7 +21,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     protected TargetType type = TargetType.NPC;
 
     [HideInInspector] public GameObject targetOut;
-    [SerializeField] protected Vector3 newTargetOut;
+    protected Vector3 newTargetOut;
     [SerializeField] GameObject targetFear;
     [Header("NavMash")]
     protected NavMeshAgent navMeshAgent;
@@ -29,13 +30,13 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     bool findTarget = true;
 
     [Header("Speed Setting")]
-    [SerializeField] float bornSpeed;
+    [SerializeField] protected float walkSpeed;
+    [SerializeField] protected float runSpeed;
     [SerializeField] float fearSpeed;
-    [SerializeField] float runAfterFearSpeed;
-    [SerializeField] float durationRunAfterFear;
+    [SerializeField] float durationRun;
     [SerializeField] float dodgeSpeed;
     protected float afterSpeed;
-    float speed;
+    protected float speed;
     [Header("Fear Setting")]
     [SerializeField] float radiusFear;
     [SerializeField] float fearDuration;
@@ -95,14 +96,14 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         navMeshAgent = GetComponent<NavMeshAgent>();
         myCollider = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
-        ResetStatus(); //Test
+        // ResetStatus(); //Test
     }
     #region SetUp
     public virtual void SetUpHumansBorn()
     {
         if (navMeshAgent.enabled)
         {
-            speed = bornSpeed;
+            speed = walkSpeed;
             afterSpeed = speed;
             navMeshAgent.speed = speed;
             bloodEffect.SetActive(false);
@@ -118,7 +119,21 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         newTargetOut = new Vector3(newTargetOut.x, 0, newTargetOut.y) + targetOut.transform.position;
         target = newTargetOut;
     }
-
+    #endregion
+    #region NotMove
+    public virtual void CallCheckNotMove()
+    {
+        if (checkNotMove != null)
+        {
+            StopCoroutine(checkNotMove);
+            checkNotMove = null;
+            checkNotMove = StartCoroutine(LoopCheckNotMove());
+        }
+        else
+        {
+            checkNotMove = StartCoroutine(LoopCheckNotMove());
+        }
+    }
     IEnumerator LoopCheckNotMove()
     {
         yield return new WaitForSeconds(1f);
@@ -148,7 +163,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             countTime -= Time.deltaTime;
             yield return true;
         }
-        FastSetNewTargetNavMash(newTargetOut, bornSpeed);
+        FastSetNewTargetNavMash(newTargetOut, walkSpeed);
         checkNotMove = StartCoroutine(LoopCheckNotMove());
     }
     #endregion
@@ -211,14 +226,14 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         yield return new WaitForSeconds(fearDuration);
         //play animation run
         StartCoroutine(Run());
-        FastSetNewTargetNavMash(newTargetOut, runAfterFearSpeed);
+        FastSetNewTargetNavMash(newTargetOut, runSpeed);
         callfear = null;
     }
     #endregion
     IEnumerator Run()
     {
-        yield return new WaitForSeconds(durationRunAfterFear);
-        navMeshAgent.speed = bornSpeed;
+        yield return new WaitForSeconds(durationRun);
+        navMeshAgent.speed = walkSpeed;
     }
     #region NavMash
     protected void StopMove()
@@ -230,7 +245,10 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         if (findTarget)
         {
             findTarget = false;
-            heartbeat = StartCoroutine(Heartbeat());
+            if (heartbeat == null)
+            {
+                heartbeat = StartCoroutine(Heartbeat());
+            }
         }
     }
     IEnumerator Heartbeat()
@@ -264,7 +282,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         bool canGetInCar = false;
         if (_carTarget != null)
         {
-            FastSetNewTargetNavMash(_carTarget.transform.position, runAfterFearSpeed);
+            FastSetNewTargetNavMash(_carTarget.transform.position, runSpeed);
         }
         yield return new WaitForSeconds(0.5f);
         while (transform.position != target && !canGetInCar)
@@ -352,7 +370,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         findTarget = true;
         onGoToCar = false;
         onCar = false;
-        FastSetNewTargetNavMash(newTargetOut, bornSpeed);
+        FastSetNewTargetNavMash(newTargetOut, walkSpeed);
     }
     #endregion
     #region Dodge
@@ -422,7 +440,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             StopCoroutine(coroutineDodge);
             coroutineDodge = null;
         }
-        FastSetNewTargetNavMash(afterTarget, bornSpeed);
+        FastSetNewTargetNavMash(afterTarget, walkSpeed);
         isPaused = false;
     }
     #endregion
@@ -462,8 +480,9 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         SetUpHumansBorn();
         SetUpTarget();
         HeartbeatNavMash();
-        checkNotMove = StartCoroutine(LoopCheckNotMove());
+        CallCheckNotMove();
     }
+
     public void SetUpStartGame()
     {
         myPool.Release(this.gameObject);
@@ -481,7 +500,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         onDie = !_status;
     }
     #endregion
-    public void OutPotal()
+    public virtual void OutPotal()
     {
         //Effect Potal
         Die();

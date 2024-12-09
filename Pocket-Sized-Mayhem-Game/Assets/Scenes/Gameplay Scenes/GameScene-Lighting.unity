@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000004, guid: a748c0be628ec7740942896b2c3dd699,
+  m_LightingDataAsset: {fileID: 112000002, guid: 8e9b427197036a948a9d0681f1f8f835,
     type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
@@ -466,6 +466,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Final City Hall Shop
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: eb984823ae955964ca80d13326b98a8e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

@@ -61,6 +61,7 @@ public class Car : MonoBehaviour, TakeDamage
     }
     IEnumerator CallStartCar(Vector3 _targetOut)
     {
+        carNavMeshAgent.enabled = true;
         fuel = Random.Range(fuelMinDuration, fuelMaxDuration);
         dodgeTrigerObj.SetActive(true);
         carOnStart = true;

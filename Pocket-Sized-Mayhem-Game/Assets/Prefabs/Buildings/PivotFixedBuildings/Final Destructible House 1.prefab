@@ -113,11 +113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab5300e21ad842240b4492a51cf1d7f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _force: 0
+  _force: 5
   _pieces: []
-  _civilians: {fileID: 6660491637078578144, guid: 69ac7de5014f21449bcc16257cc17696,
-    type: 3}
-  _spawner: {fileID: 0}
   <DeathSFX>k__BackingField:
     Guid:
       Data1: -721403134
@@ -125,6 +122,7 @@ MonoBehaviour:
       Data3: 1073759619
       Data4: -1454832663
     Path: event:/SFX/Buildings/SFX_Destruction
+  privot: {fileID: 4249353548840028428}
 --- !u!54 &2979302203794002842
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -162,7 +160,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.1, y: 0.1, z: 0.1}
+  m_Extents: {x: 0.135, y: 0.185, z: 0.1}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
