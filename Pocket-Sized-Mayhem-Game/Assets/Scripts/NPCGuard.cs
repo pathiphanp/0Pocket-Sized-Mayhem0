@@ -6,22 +6,25 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
 {
     [SerializeField] GuardEffect guardEffect;
     [SerializeField] float durationStun;
-    int countDefent = 0;
+    [SerializeField] int countDefent = 0;
     int maxDefent = 3;
-
     Vector3 centarRndMove;
-
-    [HideInInspector] public GuardCheckScrap checkScrap;
 
     [Header("Random Positon")]
     [SerializeField] float radiusRnd;
-    [Header("CheckScrap")]
-    [SerializeField] float checkRadius;
+    [Header("Scrap")]
+    [HideInInspector] public GuardCheckScrap checkScrap;
+    GameObject scrapTarget;
+
     [Header("Coroutine")]
     Coroutine guardRunToProtect;
     Coroutine stun;
-    Coroutine attackScrap;
-
+    Coroutine attackScrap = null;
+    Coroutine checkMoveToTarget;
+    private void Start()
+    {
+        // type = TargetType.Guard; //Test
+    }
     #region SetUP
     public void SetUpTarget(Vector3 _newtarget)
     {
@@ -38,7 +41,13 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
 
     public override void ExtraEffetNotDie()
     {
-        if (stun == null)
+        if (stun != null)
+        {
+            StopCoroutine(stun);
+            stun = null;
+            stun = StartCoroutine(StunDuration());
+        }
+        else if (stun == null)
         {
             stun = StartCoroutine(StunDuration());
         }
@@ -47,16 +56,16 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
     {
         //Stop Move | play animation Stun
         StopMove();
-        yield return new WaitForSeconds(durationStun);
         //return to target | play animation Walk
         countDefent++;
         if (countDefent < maxDefent)
         {
+            yield return new WaitForSeconds(durationStun);
             FastSetNewTargetNavMash(target, afterSpeed);
         }
         else
         {
-            type = TargetType.NPC;
+            Die();
         }
         stun = null;
     }
@@ -72,7 +81,10 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
 
     void CallCheckMoveToTarget()
     {
-        StartCoroutine(CheckMoveToTarget());
+        if (navMeshAgent.enabled)
+        {
+            checkMoveToTarget = StartCoroutine(CheckMoveToTarget());
+        }
     }
     IEnumerator CheckMoveToTarget()
     {
@@ -100,6 +112,11 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
     public void GuardProtect(Vector3 _attackArea)
     {
         //Play Animation run Guard
+        if (checkMoveToTarget != null)
+        {
+            StopCoroutine(checkMoveToTarget);
+            checkMoveToTarget = null;
+        }
         navMeshAgent.enabled = false;
         if (guardRunToProtect == null)
         {
@@ -108,7 +125,10 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
     }
     IEnumerator RunToHammerAttack(Vector3 _attackArea)
     {
-        transform.LookAt(_attackArea);
+        Vector3 direction = (_attackArea - transform.position).normalized;
+        direction.y = 0; // ล็อกแกน Y
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = targetRotation;
         Vector3 _diraction = (transform.position - _attackArea).normalized;
         _diraction.y = 0;
         rb.AddForce(-_diraction * 30, ForceMode.Impulse);
@@ -131,21 +151,38 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
         FastSetNewTargetNavMash(_scrap.transform.position, walkSpeed);
         if (attackScrap == null)
         {
+            scrapTarget = _scrap;
+            checkScrap.gameObject.SetActive(false);
             attackScrap = StartCoroutine(MoveToTargetScrap());
         }
     }
+    private void Update()
+    {
+        // Debug.Log(navMeshAgent.remainingDistance);
+    }
     IEnumerator MoveToTargetScrap()
     {
-        if (navMeshAgent.remainingDistance >= 1)
+        // yield return new WaitForSeconds(0.5f);
+        while (navMeshAgent.remainingDistance == 0)//Check remainingDistance = 0
+        {
+            yield return true;
+        }
+        while (navMeshAgent.velocity.magnitude != 0)//Check move character
         {
             yield return true;
         }
         //Play animation attack
         attackScrap = null;
+        Attack();
     }
-    void Attack(GameObject _scrap)
+    void Attack()
     {
-        _scrap.GetComponent<TakeDamage>();
+        if (scrapTarget != null)
+        {
+            scrapTarget.GetComponent<TakeDamage>().TakeDamage();
+        }
+        scrapTarget = null;
+        RndMoveInArea();
         checkScrap.gameObject.SetActive(true);
     }
 

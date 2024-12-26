@@ -7,7 +7,7 @@ public class GuardEffect : MonoBehaviour
     [SerializeField] List<SetGuardEffectProtect> listGuardProtect = new List<SetGuardEffectProtect>();
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<SetGuardEffectProtect>() != null)
+        if (other.GetComponent<SetGuardEffectProtect>() != null && other.GetComponent<TakeDamage>().ThisType() != TargetType.Guard)
         {
             other.GetComponent<SetGuardEffectProtect>().AddGuardEffect();
             listGuardProtect.Add(other.GetComponent<SetGuardEffectProtect>());

@@ -9,7 +9,6 @@ public class BuildingScrap : MonoBehaviour, TakeDamage
     [HideInInspector] public bool canCheck = true;
     public bool canDestroy = false;
     Collider bColl;//BuildingScrap Collider
-    [SerializeField] float _y;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -20,7 +19,6 @@ public class BuildingScrap : MonoBehaviour, TakeDamage
     {
         if (rb != null && canCheck)
         {
-            _y = rb.velocity.y;
             if (rb.velocity.y == 0)
             {
                 canCheck = false;
@@ -30,7 +28,7 @@ public class BuildingScrap : MonoBehaviour, TakeDamage
             }
         }
     }
-    public void Explode(float _force,Vector3 _direction)
+    public void Explode(float _force, Vector3 _direction)
     {
         transform.SetParent(null);
         rb.AddForce(_direction.normalized * _force, ForceMode.Impulse);
@@ -45,19 +43,24 @@ public class BuildingScrap : MonoBehaviour, TakeDamage
     {
         if (other.GetComponent<TakeDamage>() != null && canCheck)
         {
-            if (other.GetComponent<TakeDamage>().TakeDamage() == TargetType.NPC)
+            if (other.GetComponent<TakeDamage>().ThisType() == TargetType.NPC)
             {
                 other.GetComponent<TakeDamage>().TakeDamage();
             }
         }
     }
 
-    public TargetType TakeDamage()
+    public bool TakeDamage()
     {
         if (canDestroy)
         {
             Destroy(this.gameObject);
         }
+        return true;
+    }
+
+    public TargetType ThisType()
+    {
         return TargetType.Building;
     }
 }

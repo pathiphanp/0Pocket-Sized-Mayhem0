@@ -5,14 +5,25 @@ using UnityEngine;
 
 public class HammerAttack : MonoBehaviour
 {
+    Collider coll;
     [SerializeField] GameObject fearAear;
     [SerializeField] public GameObject checkGuardAear;
-    [SerializeField] List<GameObject> target = new List<GameObject>();
+    [SerializeField] public List<GameObject> target = new List<GameObject>();
+    [SerializeField] public List<GameObject> checkHumans = new List<GameObject>();
+    bool onAddFear = false;
+    private void Start()
+    {
+        coll = GetComponent<Collider>();
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<TakeDamage>() != null)
         {
             target.Add(other.gameObject);
+            if (other.gameObject.GetComponent<TakeDamage>().ThisType() == TargetType.NPC)
+            {
+                checkHumans.Add(other.gameObject);
+            }
         }
     }
     private void OnTriggerExit(Collider other)
@@ -20,6 +31,10 @@ public class HammerAttack : MonoBehaviour
         if (other.gameObject.GetComponent<TakeDamage>() != null)
         {
             target.Remove(other.gameObject);
+            if (other.gameObject.GetComponent<TakeDamage>().ThisType() == TargetType.NPC)
+            {
+                checkHumans.Remove(other.gameObject);
+            }
         }
     }
     public void CallHammerAttack()
@@ -30,19 +45,26 @@ public class HammerAttack : MonoBehaviour
             {
                 if (tg != null)
                 {
-                    if (tg.GetComponent<TakeDamage>() != null)
+                    if (tg.GetComponent<TakeDamage>().TakeDamage() && !onAddFear)
                     {
-                        if (tg.GetComponent<TakeDamage>().TakeDamage() != TargetType.Guard)
-                        {
-                            tg.GetComponent<TakeDamage>().TakeDamage();
-                            fearAear.transform.position = transform.position;
-                            checkGuardAear.SetActive(true);
-                            fearAear.GetComponent<FearAreaControl>().CallFear();
-                        }
+                        onAddFear = true;
+                        fearAear.transform.position = transform.position;
+                        fearAear.GetComponent<FearAreaControl>().CallFear();
                     }
                 }
             }
         }
         target.Clear();
+        checkHumans.Clear();
+        onAddFear = false;
+        coll.enabled = false;
+        coll.enabled = true;
+    }
+    public void CheckHaveHumanInAttackArea()
+    {
+        if (checkHumans.Count > 0)
+        {
+            checkGuardAear.SetActive(true);
+        }
     }
 }

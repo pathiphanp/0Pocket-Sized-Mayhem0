@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
     [HideInInspector] public PlayerControl playerControl;
     [HideInInspector] public UiManager uiManager;
+    [HideInInspector] public PrisonControl prisonControl;
     [SerializeField] public TextEffect textEffectControl;
     float playerWinPoint;
     [SerializeField] public float humansPercentKill;
@@ -22,6 +23,7 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         uiManager = FindAnyObjectByType<UiManager>();
         playerControl = FindAnyObjectByType<PlayerControl>();
+        prisonControl = FindAnyObjectByType<PrisonControl>();
     }
     private void Start()
     {
@@ -31,7 +33,9 @@ public class GameManager : Singleton<GameManager>
     {
         if (targetType == TargetType.NPC)
         {
-            string report = playerKill++.ToString() + " / " + playerWinPoint;
+            playerKill++;
+            string report = playerKill.ToString() + " / " + playerWinPoint;
+            prisonControl.SpawnGuard();
             uiManager.UpdateUiHumansKill(report);
             RemoveTotalHumans();
         }

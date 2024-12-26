@@ -14,15 +14,16 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _BLEND_MODE_VERTEX_COLORS
+  - _DISABLE_DECALS
   - _DISABLE_SSR_TRANSPARENT
   - _PREVIEW_VERTEX_COLORS_OFF
   m_InvalidKeywords:
   - _NORMALMAP
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2000
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -261,7 +262,7 @@ Material:
     - _StencilWriteMaskMV: 41
     - _Steps: 5
     - _SubsurfaceMask: 1
-    - _SupportDecals: 1
+    - _SupportDecals: 0
     - _SurfaceType: 0
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1

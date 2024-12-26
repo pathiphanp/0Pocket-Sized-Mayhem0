@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class GuardCheckScrap : MonoBehaviour
 {
-    NPCGuard npcGuard;
+    [SerializeField] NPCGuard npcGuard;
     private void Start()
     {
-        npcGuard = GetComponent<NPCGuard>();
         npcGuard.checkScrap = this;
     }
-    List<BuildingScrap> buildingScraps;
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<BuildingScrap>() != null)

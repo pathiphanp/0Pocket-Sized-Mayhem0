@@ -4,7 +4,8 @@ namespace Interface
 {
     public interface TakeDamage
     {
-        TargetType TakeDamage();
+        bool TakeDamage();
+        TargetType ThisType();
     }
     public interface Fear
     {

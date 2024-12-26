@@ -43,7 +43,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] bool canMove = false;
     bool canAttack = true;
     bool onAttack = false;
-
+    bool onGround = true;
 
     public float sensitivity = 0.1f;
     private Vector3 lastMousePosition;
@@ -52,7 +52,6 @@ public class PlayerControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         GameManager._instance.playerControl = this;
         // Cursor.visible = false;
         // Cursor.lockState = CursorLockMode.Locked;
@@ -73,7 +72,7 @@ public class PlayerControl : MonoBehaviour
         if (GameManager._instance.canPlayGame)
         {
             Move();
-            if (Input.GetMouseButtonDown(0) && canAttack)
+            if (Input.GetMouseButtonDown(0) && canAttack && onGround)
             {
                 HammerAttack();
             }
@@ -87,6 +86,8 @@ public class PlayerControl : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
             {
+                onGround = true;
+                targetHitPosition.SetActive(true);
                 if (lastMousePosition != Input.mousePosition)
                 {
                     canMove = true;
@@ -95,6 +96,12 @@ public class PlayerControl : MonoBehaviour
                 {
                     canMove = false;
                 }
+            }
+            else
+            {
+                targetHitPosition.SetActive(false);
+                onGround = false;
+                hammerAttack.target.Clear();
             }
             if (canMove)
             {
@@ -113,7 +120,7 @@ public class PlayerControl : MonoBehaviour
 
     IEnumerator HammerAction()
     {
-        hammerAttack.checkGuardAear.SetActive(true);
+        hammerAttack.CheckHaveHumanInAttackArea();
         Vector3 startHammerPoint = hammerHandlePivot.transform.position;
         Vector3 hammerChargePos = new Vector3(hammerHandlePivot.transform.localPosition.x + chargeBack,
         hammerHandlePivot.transform.localPosition.y + chargeUp, hammerHandlePivot.transform.localPosition.z);

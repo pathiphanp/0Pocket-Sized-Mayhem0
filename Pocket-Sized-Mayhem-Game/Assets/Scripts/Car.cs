@@ -5,7 +5,7 @@ using Interface;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Car : MonoBehaviour, TakeDamage
+public class Car : MonoBehaviour, TakeDamage, SetGuardEffectProtect
 {
     Collider coll;
     Rigidbody rb;
@@ -42,7 +42,8 @@ public class Car : MonoBehaviour, TakeDamage
     [SerializeField] ParticleSystem explodeEffect;
     [SerializeField] float explodeRadius;
     [SerializeField] LayerMask npc;
-
+    bool canDie = true;
+    bool isDie = false;
     Vector3 targetOut;
     [HideInInspector] public bool carOnStart = false;
     private void Start()
@@ -235,14 +236,23 @@ public class Car : MonoBehaviour, TakeDamage
         heartbeatNav = StartCoroutine(Heartbeat());
     }
     #region  Take Damage
-    public TargetType TakeDamage()
+    public bool TakeDamage()
     {
-        carModel.SetActive(false);
-        explodeEffect.Play();
-        StopAllCoroutines();
-        carNavMeshAgent.speed = 0;
-        carNavMeshAgent.enabled = false;
-        StartCoroutine(CarDestroy());
+        if (!isDie && canDie)
+        {
+            isDie = true;
+            carModel.SetActive(false);
+            explodeEffect.Play();
+            StopAllCoroutines();
+            carNavMeshAgent.speed = 0;
+            carNavMeshAgent.enabled = false;
+            StartCoroutine(CarDestroy());
+            return true;
+        }
+        return false;
+    }
+    public TargetType ThisType()
+    {
         return TargetType.Building;
     }
     IEnumerator CarDestroy()
@@ -292,5 +302,15 @@ public class Car : MonoBehaviour, TakeDamage
             Gizmos.DrawLine(rbc.transform.position, rbc.transform.position + rbc.transform.forward * backCarcheckDistance);
             Gizmos.DrawWireSphere(transform.position, explodeRadius);
         }
+    }
+
+    public void AddGuardEffect()
+    {
+        canDie = false;
+    }
+
+    public void RemoveGuardEffect()
+    {
+        canDie = true;
     }
 }

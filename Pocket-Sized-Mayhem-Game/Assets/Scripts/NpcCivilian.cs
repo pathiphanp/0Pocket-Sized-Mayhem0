@@ -4,21 +4,17 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
 using UnityEngine.Rendering.HighDefinition;
-
-public enum NpcState
-{
-    Walk, Run, Car
-}
 public class NpcCivilian : MonoBehaviour, TakeDamage, Fear, AddInCar<GameObject>,
 Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectProtect
 {
     protected Rigidbody rb;
     Collider myCollider;
+    Animator anim;
     [SerializeField] GameObject myModel;
     protected Vector3 target;
     protected Vector3 afterTarget;
 
-    protected TargetType type = TargetType.NPC;
+    [SerializeField] protected TargetType type;
 
     [HideInInspector] public GameObject targetOut;
     protected Vector3 newTargetOut;
@@ -93,6 +89,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
 
     private void Awake()
     {
+        // anim = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         myCollider = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
@@ -111,6 +108,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             bloodEffect.transform.localPosition = new Vector3(0, 1.7f, 0);
         }
         //play animation walk
+        Walk();
     }
     public virtual void SetUpTarget()
     {
@@ -120,7 +118,21 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         target = newTargetOut;
     }
     #endregion
-    #region NotMove
+    #region MoveSettting
+    void Walk()
+    {
+        // anim.SetTrigger("Walk");
+    }
+    void Run()
+    {
+        // anim.SetTrigger("Run");
+    }
+    void FearRun()
+    {
+        // anim.SetTrigger("FearRun");
+    }
+    #endregion
+    #region CheckNotMove
     public virtual void CallCheckNotMove()
     {
         if (checkNotMove != null)
@@ -163,38 +175,44 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             countTime -= Time.deltaTime;
             yield return true;
         }
+        Walk();
         FastSetNewTargetNavMash(newTargetOut, walkSpeed);
         checkNotMove = StartCoroutine(LoopCheckNotMove());
     }
     #endregion
     #region TakeDmage
-    public TargetType TakeDamage()
+    public bool TakeDamage()
     {
         if (!onDie && type == TargetType.NPC)
         {
+            onDie = true;
             Die();
             GameManager._instance.AddPointPlayerKill(type);
-            return type;
+            return true;
         }
         else
         {
             ExtraEffetNotDie();
+            return false;
         }
-        return TargetType.None;
+    }
+    public TargetType ThisType()
+    {
+        return type;
     }
     public virtual void ExtraEffetNotDie() { }
     #endregion
     #region Die
     public virtual void ExtraEffetDie() { }
-    void Die()
+    protected void Die()
     {
         ExtraEffetDie();
+        ReturnToPool();
         SetStatus(false);
         bloodEffect.transform.SetParent(null);
         bloodEffect.SetActive(true);
         StopMove();
         StopAllCoroutines();
-        ReturnToPool();
     }
     #endregion
     #region Add Fear
@@ -202,8 +220,8 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     {
         if (canFear && !onCar && type != TargetType.Guard)
         {
+
             navMeshAgent.speed = 0;
-            //play animation fear run
             callCooldownFear = StartCoroutine(CooldownFearStatus());
             if (callfear == null)
             {
@@ -212,6 +230,8 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             Vector3 randomPosition = Random.insideUnitCircle * radiusFear;
             randomPosition = new Vector3(randomPosition.x, 0, randomPosition.y) + transform.position;
             targetFear.transform.position = randomPosition;
+            //play animation fear run
+            FearRun();
             FastSetNewTargetNavMash(targetFear.transform.position, fearSpeed);
         }
     }
@@ -225,14 +245,16 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     {
         yield return new WaitForSeconds(fearDuration);
         //play animation run
-        StartCoroutine(Run());
+        Run();
+        StartCoroutine(CooldownRun());
         FastSetNewTargetNavMash(newTargetOut, runSpeed);
         callfear = null;
     }
     #endregion
-    IEnumerator Run()
+    IEnumerator CooldownRun()
     {
         yield return new WaitForSeconds(durationRun);
+        Walk();
         navMeshAgent.speed = walkSpeed;
     }
     #region NavMash
@@ -277,11 +299,13 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     public virtual IEnumerator GoToCar(Car _carTarget)
     {
         //play animation run
+        Run();
         onGoToCar = true;
         car = _carTarget;
         bool canGetInCar = false;
         if (_carTarget != null)
         {
+            Run();
             FastSetNewTargetNavMash(_carTarget.transform.position, runSpeed);
         }
         yield return new WaitForSeconds(0.5f);
@@ -370,6 +394,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         findTarget = true;
         onGoToCar = false;
         onCar = false;
+        Walk();
         FastSetNewTargetNavMash(newTargetOut, walkSpeed);
     }
     #endregion
@@ -440,6 +465,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
             StopCoroutine(coroutineDodge);
             coroutineDodge = null;
         }
+        Walk();
         FastSetNewTargetNavMash(afterTarget, walkSpeed);
         isPaused = false;
     }
@@ -464,11 +490,13 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     {
         if (myPool != null && !onObjectPool)
         {
+            Debug.Log("A");
             onObjectPool = true;
             myPool.Release(this.gameObject);
         }
         else
         {
+            Debug.Log("B");
             Destroy(this.gameObject);
         }
     }
@@ -504,7 +532,6 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     {
         //Effect Potal
         Die();
-        ReturnToPool();
     }
 
     public void AddGuardEffect()

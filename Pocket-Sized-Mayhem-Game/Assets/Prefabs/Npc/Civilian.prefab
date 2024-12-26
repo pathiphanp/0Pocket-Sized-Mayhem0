@@ -1142,6 +1142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myModel: {fileID: 6420295081876429845}
+  type: 1
   targetOut: {fileID: 0}
   targetFear: {fileID: 42649319719319555}
   heartbeatDuration: 3

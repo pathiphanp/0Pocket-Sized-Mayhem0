@@ -23,7 +23,7 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
             _pieces.Add(piece);
         }
     }
-    public TargetType TakeDamage()
+    public bool TakeDamage()
     {
         RuntimeManager.PlayOneShot(DeathSFX, this.gameObject.transform.position);
         this.GetComponent<Rigidbody>().isKinematic = false;
@@ -40,6 +40,11 @@ public class BuildingDestruction : MonoBehaviour, TakeDamage
             }
         }
         Destroy(this);
+        return true;
+    }
+
+    public TargetType ThisType()
+    {
         return type;
     }
 }

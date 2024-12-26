@@ -142,7 +142,10 @@ public class NpcDriver : NpcCivilian
             foreach (Invite oh in otherHumans)
             {
                 // UnityEngine.Debug.Log(oh);
-                oh.InviteToCar(car);
+                if (oh != null)
+                {
+                    oh.InviteToCar(car);
+                }
             }
         }
     }
@@ -168,7 +171,10 @@ public class NpcDriver : NpcCivilian
     }
     public void StartDriveCar()
     {
-        StartCoroutine(DelayStartCar());
+        if (car != null)
+        {
+            StartCoroutine(DelayStartCar());
+        }
     }
 
     IEnumerator DelayStartCar()
