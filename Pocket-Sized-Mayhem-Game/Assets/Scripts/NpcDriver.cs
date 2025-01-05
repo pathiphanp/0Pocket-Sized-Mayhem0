@@ -22,10 +22,10 @@ public class NpcDriver : NpcCivilian
         base.SetUpHumansBorn();
         ResetCheckCar();
     }
-    public override void SetUpTarget()
+    public override void SetUpTarget(Vector3 _targetOut, float radiusTarget)
     {
-        targetOut = FindAnyObjectByType<Portal>().gameObject;//Test
-        base.SetUpTarget();
+        // targetOut = FindAnyObjectByType<Portal>().gameObject;//Test
+        base.SetUpTarget(_targetOut, radiusTarget);
     }
     private void OnTriggerEnter(Collider other)
     {

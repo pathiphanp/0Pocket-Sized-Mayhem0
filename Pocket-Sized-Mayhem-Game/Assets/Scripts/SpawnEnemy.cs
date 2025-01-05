@@ -21,8 +21,11 @@ public class SpawnEnemy : MonoBehaviour
     [SerializeField] int totalHumans;
     [SerializeField] int waveNum;
     [SerializeField] float radiusSpawn;
+    [SerializeField] float radiusCenterFollow;
     [SerializeField] float waveCooldown;
-
+    [Header("Center Target")]
+    int countTargetCenter;
+    bool isCenter;
     // top<topLeft +  topRight> | left<topLeft +  BottomLeft> | right<topRight +  BottomRight> | bottom<BottomLeft +  BottomRight>
     bool canSpawn = true;
     // Start is called before the first frame update
@@ -68,8 +71,7 @@ public class SpawnEnemy : MonoBehaviour
                     NpcCivilian new_Npc = null;
                     for (int i = 0; i < waveNum; i++)
                     {
-                        Vector3 randomPosition = Random.insideUnitCircle * radiusSpawn;
-                        randomPosition = new Vector3(randomPosition.x, centerSpawn.y, randomPosition.y) + centerSpawn;
+
                         bool rndNpc = RandomChance._instance.GetRandomChance(90);
                         if (rndNpc)
                         {
@@ -80,16 +82,30 @@ public class SpawnEnemy : MonoBehaviour
                             new_Npc = Instantiate(npc_Driver).GetComponent<NpcCivilian>();
                             new_Npc.gameObject.SetActive(false);
                         }
+                        //Create position target
+                        Vector3 randomPosition = Random.insideUnitCircle * radiusSpawn;
+                        randomPosition = new Vector3(randomPosition.x, centerSpawn.y, randomPosition.y) + centerSpawn;
                         new_Npc.transform.position = randomPosition;
+                        Vector3 centerFollow = Random.insideUnitCircle * radiusCenterFollow;
+                        centerFollow = new Vector3(centerFollow.x, new_Npc.transform.position.y, centerFollow.y) + new_Npc.transform.position;
                         new_Npc.gameObject.SetActive(true);
+                        if (countTargetCenter == 0)
+                        {
+                            new_Npc.SetUpTarget(portal.transform.position, 5);
+                        }
+                        else
+                        {
+                            new_Npc.SetUpTarget(centerFollow, 0);
+                        }
+                        countTargetCenter++;
                         new_Npc.ResetStatus();
-                        new_Npc.targetOut = portal;
                     }
                 }
             }
             StartCoroutine(CooldownSpawn());
         }
     }
+
     IEnumerator CooldownSpawn()
     {
         yield return new WaitForSeconds(waveCooldown);

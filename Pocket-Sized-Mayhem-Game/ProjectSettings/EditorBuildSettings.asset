@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/GameSceneTestUmp.unity
-    guid: 9c98260b78f86fd4ea55e7d974dad114
+    path: Assets/Scenes/GameScene Clone.unity
+    guid: 84a2e81aba021c14fa9e18f1944f4ca8
   - enabled: 1
     path: Assets/Scenes/Gameplay Scenes/GameScene-Lighting.unity
     guid: 1d126f586df0240428c49af34e012f3b

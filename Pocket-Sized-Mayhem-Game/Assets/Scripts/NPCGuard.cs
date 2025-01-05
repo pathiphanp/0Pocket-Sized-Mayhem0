@@ -187,7 +187,7 @@ public class NPCGuard : NpcCivilian, GuardProtectAction
     }
 
     #region NotWork
-    public override void SetUpTarget() { }
+    public override void SetUpTarget(Vector3 _targetOut, float radiusTarget) { }
     public override void OutPotal() { }
     public override IEnumerator GoToCar(Car _carTarget) { return null; }
     #endregion

@@ -15,8 +15,6 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     protected Vector3 afterTarget;
 
     [SerializeField] protected TargetType type;
-
-    [HideInInspector] public GameObject targetOut;
     protected Vector3 newTargetOut;
     [SerializeField] GameObject targetFear;
     [Header("NavMash")]
@@ -110,11 +108,11 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
         //play animation walk
         Walk();
     }
-    public virtual void SetUpTarget()
+    public virtual void SetUpTarget(Vector3 _targetOut,float radiusTarget)
     {
         navMeshAgent.avoidancePriority = Random.Range(0, 100);
-        newTargetOut = Random.insideUnitCircle * 5;
-        newTargetOut = new Vector3(newTargetOut.x, 0, newTargetOut.y) + targetOut.transform.position;
+        newTargetOut = Random.insideUnitCircle * radiusTarget;
+        newTargetOut = new Vector3(newTargetOut.x, 0, newTargetOut.y) + _targetOut;
         target = newTargetOut;
     }
     #endregion
@@ -488,7 +486,7 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     }
     public void ReturnToPool()
     {
-        if (myPool != null && !onObjectPool)
+        if (myPool != null)
         {
             Debug.Log("A");
             onObjectPool = true;
@@ -502,11 +500,9 @@ Invite, Dodge, OutCar, SetObjectPool<IObjectPool<GameObject>>, SetGuardEffectPro
     }
     public void ResetStatus()
     {
-        targetOut = FindAnyObjectByType<Portal>().gameObject;//Test
         SetStatus(true);
         myCollider.enabled = true;
         SetUpHumansBorn();
-        SetUpTarget();
         HeartbeatNavMash();
         CallCheckNotMove();
     }

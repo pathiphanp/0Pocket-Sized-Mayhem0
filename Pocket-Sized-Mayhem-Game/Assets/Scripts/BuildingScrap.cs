@@ -1,6 +1,5 @@
 using System.Collections;
 using Interface;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class BuildingScrap : MonoBehaviour, TakeDamage
